@@ -66,7 +66,6 @@ everglow/
 * MySQL Server
 * IntelliJ IDEA / VS Code
 
----
 
 ### 🔹 Backend Setup (Spring Boot)
 
@@ -85,7 +84,6 @@ spring.jpa.hibernate.ddl-auto=update
 
 Backend runs on: `http://localhost:8080`
 
----
 
 ### 🔹 Frontend Setup (Next.js)
 
@@ -116,8 +114,6 @@ Frontend runs on: `http://localhost:3000`
 
 ---
 
----
-
 ## 📄 License
 
 *Ranaweera R.H.H.V.  - IT25102853*  
@@ -129,5 +125,3 @@ Frontend runs on: `http://localhost:3000`
 
 
 This project is developed for academic purposes only.
-
----
