@@ -10,9 +10,9 @@
 
 ### 🔹 Frontend
 
-* Next.js (React Framework)
+* Vite
 * Tailwind CSS
-* JavaScript (ES6+)
+* JavaScript
 
 ### 🔹 Backend
 
@@ -26,8 +26,7 @@
 
 ### 🔹 Tools
 
-* IntelliJ IDEA (Backend)
-* VS Code (Frontend)
+* IntelliJ IDEA
 * Postman (API Testing)
 * Git & GitHub (Version Control)
 
@@ -64,7 +63,7 @@ everglow/
 * Java JDK 17+
 * Node.js (v18+)
 * MySQL Server
-* IntelliJ IDEA / VS Code
+* IntelliJ IDEA
 
 
 ### 🔹 Backend Setup (Spring Boot)
@@ -105,12 +104,7 @@ npm install
 npm run dev
 ```
 
-Frontend runs on: `http://localhost:3000`
-
----
-
-## 📸 Screenshots
-
+Frontend runs on: `http://localhost:5173`
 
 ---
 
