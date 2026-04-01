@@ -56,7 +56,7 @@ everglow/
 ```
 
 ---
-## 🚀 Create Spring Boot Project
+<img width="1523" height="825" alt="Capture" src="https://github.com/user-attachments/assets/c610c2fb-8eb2-4292-b7d6-c6418e57c354" />
 
 👉 Open Spring Initializr  
 https://start.spring.io/
