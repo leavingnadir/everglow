@@ -65,12 +65,51 @@ everglow/
 * MySQL Server
 * IntelliJ IDEA
 
+---
+## 🚀 Create Spring Boot Project
 
-### 🔹 Backend Setup (Spring Boot)
+👉 Open Spring Initializr  
+https://start.spring.io/
 
-1. Open `backend` folder in IntelliJ
-2. Configure database in `application.properties`:
 
+### ⚙️ Project Configuration
+
+- **Project** → Maven
+- **Language** → Java
+- **Spring Boot** → Latest stable (3.x)
+- **Group** → `com.weddingplanning`
+- **Artifact** → `backend`
+- **Name** → `backend`
+- **Package name** → `com.weddingplanning`
+- **Packaging** → Jar
+- **Java Version** → 17 ✅
+
+---
+
+### 📦 Dependencies (IMPORTANT)
+
+Add the following:
+
+### ✅ Required
+- Spring Web
+- Spring Data JPA
+- PostgreSQL Driver
+- Spring Security
+- Lombok
+- Validation
+
+### ➕ Optional
+- Spring Boot DevTools
+
+Click:
+
+👉 **Generate → Download ZIP**
+
+---
+
+### 🔹Setup Backend
+
+Extract the ZIP and move it into your project structure:
 ```
 spring.datasource.url=jdbc:mysql://localhost:3306/everglow_db
 spring.datasource.username=root
