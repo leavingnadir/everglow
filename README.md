@@ -2,7 +2,9 @@
 
 ## 📌 Project Overview
 
-**EverGlow** is a full-stack web application designed to simplify wedding planning by connecting users with verified vendors such as photographers, venues, decorators, and caterers. The system allows users to browse vendors, make bookings, and manage wedding services efficiently.
+**EverGlow** is a full-stack web application designed to simplify wedding planning by connecting users with verified vendors such as photographers, venues, decorators, and caterers. The system provides a **beautiful and user-friendly interface** that enhances the overall user experience while managing wedding services efficiently.
+
+The platform includes key modules such as **User Management, Vendor Management, Package Management, Booking Management, Payment & Invoice handling, and Review & Feedback systems**. These features allow users to seamlessly browse vendors, select suitable packages, make bookings, complete payments, and share their experiences, ensuring a smooth and organized wedding planning process.
 
 ---
 
@@ -18,11 +20,10 @@
 
 * Java Spring Boot
 * Spring Web (REST APIs)
-* Spring Data JPA
 
 ### 🔹 Database
 
-* MySQL
+* Neon Console (Postgresql)
 
 ### 🔹 Tools
 
@@ -55,17 +56,6 @@ everglow/
 ```
 
 ---
-
-## ⚙️ Installation & Setup
-
-### 🔹 Prerequisites
-
-* Java JDK 17+
-* Node.js (v18+)
-* MySQL Server
-* IntelliJ IDEA
-
----
 ## 🚀 Create Spring Boot Project
 
 👉 Open Spring Initializr  
@@ -83,8 +73,6 @@ https://start.spring.io/
 - **Package name** → `com.weddingplanning`
 - **Packaging** → Jar
 - **Java Version** → 17 ✅
-
----
 
 ### 📦 Dependencies (IMPORTANT)
 
@@ -107,7 +95,7 @@ Click:
 
 ---
 
-### 🔹Setup Backend
+### 🔹Backend setup (Springboot, Maven , Java)
 
 Extract the ZIP and move it into your project structure:
 ```
@@ -123,7 +111,7 @@ spring.jpa.hibernate.ddl-auto=update
 Backend runs on: `http://localhost:8080`
 
 
-### 🔹 Frontend Setup (Next.js)
+### 🔹 Frontend Setup (React, TailwindCSS, Vite)
 
 1. Navigate to frontend folder:
 
