@@ -204,8 +204,8 @@ git commit -m "message"     # Commit staged changes with a message
 ```bash
 git remote -v                        # List remote connections
 git remote add main <url>            # Add a remote called origin
-git push main                        # Push branch to remote
-git push -u main                     # Push and set upstream tracking
+git push origin main                 # Push branch to remote
+git push -u origin main              # Push and set upstream tracking
 git pull                             # Fetch and merge from remote
 ```
 
