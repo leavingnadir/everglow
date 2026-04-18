@@ -123,6 +123,7 @@ cd frontend
 
 ```
 npm install
+npm install react-router-dom
 ```
 
 3. Run the development server:
