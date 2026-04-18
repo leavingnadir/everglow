@@ -73,7 +73,11 @@ export default function PaymentForm() {
     setSubmitError(null);
 
     try {
-      const payload = { ...form, amount: Number(form.amount) };
+      const payload = {
+        ...form,
+        amount: Number(form.amount),
+        bookingId: Number(String(form.bookingId).replace("#", "")),
+      };
       if (isEdit) {
         await paymentService.updatePayment(id, payload);
       } else {
@@ -152,7 +156,7 @@ export default function PaymentForm() {
                 type="text"
                 value={form.bookingId}
                 onChange={(e) => handleChange("bookingId", e.target.value)}
-                placeholder="e.g. 1042"
+                placeholder="e.g. 1042 (numbers only)"
                 className={`w-full border font-sans text-sm px-4 py-2.5 rounded-sm focus:outline-none transition-colors text-[#2C2C2C] placeholder-[#2C2C2C]/25 ${
                   errors.bookingId
                     ? "border-[#C0392B] bg-red-50"

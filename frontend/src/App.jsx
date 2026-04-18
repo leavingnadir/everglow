@@ -140,15 +140,19 @@ function Home() {
 function App() {
   return (
     <BrowserRouter>
-      {/* Navbar — visible on every page */}
-      <header
-        className="flex justify-between items-center px-10 py-6" style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #EDE0DF" }}>
-        {/* Logo */}
-        <Link to="/" className="text-2xl font-serif font-bold tracking-wide" style={{ color: "#C0392B" }}>
-          Everglow
-        </Link>
+      <header className="flex justify-between items-center px-10 py-6" style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #EDE0DF" }}>
+        <Link to="/"
+            style={{
+              fontFamily: "var(--font-brand)",
+              fontSize: "26px",
+              fontWeight: 600,
+              letterSpacing: "0.06em",
+              color: "#C0392B",
+              textDecoration: "none",
+            }}>
+            Everglow
+          </Link>
 
-        {/* Nav links */}
         <nav className="space-x-7 text-sm font-sans font-medium">
           {[
             { label: "Home",     to: "/",         isLink: true },

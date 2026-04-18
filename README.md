@@ -28,7 +28,7 @@ The platform includes key modules such as **User Management, Vendor Management, 
 ### 🔹 Tools
 
 * IntelliJ IDEA
-* Postman (API Testing)
+* HTTPie (API Testing)
 * Git & GitHub (Version Control)
 
 ---
@@ -37,22 +37,8 @@ The platform includes key modules such as **User Management, Vendor Management, 
 
 ```
 everglow/
- ├── backend/
- │   ├── src/main/java/
- │   │   ├── controller/
- │   │   ├── service/
- │   │   ├── repository/
- │   │   └── model/
- │   ├── resources/
- │   │   └── application.properties
- │   └── pom.xml
- │
- └── frontend/
-     ├── app/
-     ├── components/
-     ├── pages/
-     ├── styles/
-     └── package.json
+├── frontend/       # React + Vite app
+└── backend/        # Spring Boot app
 ```
 
 ---
@@ -95,55 +81,146 @@ Click:
 
 ---
 
-### 🔹Backend setup (Springboot, Maven , Java)
+## 🎨 Frontend Setup
 
-Extract the ZIP and move it into your project structure:
-```
-spring.datasource.url=jdbc:mysql://localhost:3306/everglow_db
-spring.datasource.username=root
-spring.datasource.password=yourpassword
-
-spring.jpa.hibernate.ddl-auto=update
-```
-
-3. Run the Spring Boot application
-
-Backend runs on: `http://localhost:8080`
-
-
-### 🔹 Frontend Setup (React, TailwindCSS, Vite)
-
-1. Navigate to frontend folder:
-
-```
+```bash
 cd frontend
 ```
-
-2. Install dependencies:
-
 ```
 npm install
-npm install react-router-dom
 ```
-
-3. Run the development server:
-
 ```
 npm run dev
 ```
 
-Frontend runs on: `http://localhost:5173`
+Frontend runs at: **http://localhost:5173**
 
 ---
 
-## 📄 License
+## ☕ Backend Setup
 
-*Ranaweera R.H.H.V.  - IT25102853*  
-*Isaipriya K. - IT25103512*  
-*Gamage C.M. - IT25101509*  
-*Mathushan K.  - IT25103450*  
-*Sandanayake T.U.A. - IT25101625*  
-*Jayasinghe W M S B  - IT25100771*
+```bash
+cd backend
+```
+
+```
+mvnw.cmd install
+```
+
+```
+./mvnw install
+```
+
+```
+mvnw.cmd spring-boot:run
+```
+
+```
+./mvnw spring-boot:run
+```
+
+Backend runs at: **http://localhost:8081**
+
+### Other Backend Commands
+
+```bash
+./mvnw clean install
+```
+
+---
+
+## 🗄️ Database Setup (Neon PostgreSQL)
+
+1. Go to [console.neon.tech](https://console.neon.tech) and create a project
+2. Open the **SQL Editor** and run the following to create the payments table:
+```sql
+CREATE TABLE IF NOT EXISTS payments (
+    id             BIGSERIAL PRIMARY KEY,
+    booking_id     BIGINT        NOT NULL,
+    vendor_name    VARCHAR(255),
+    amount         NUMERIC(10,2) NOT NULL,
+    payment_method VARCHAR(50),
+    status         VARCHAR(50)   DEFAULT 'PENDING',
+    payment_date   DATE,
+    notes          TEXT,
+    created_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+3. Copy your connection details and update `backend/src/main/resources/application.properties`:
+```properties
+spring.datasource.url=jdbc:postgresql://<YOUR_NEON_HOST>/neondb?sslmode=require
+spring.datasource.username=<YOUR_USERNAME>
+spring.datasource.password=<YOUR_PASSWORD>
+```
+
+---
+
+## 🔗 API Endpoints
+
+Base URL: `http://localhost:8081/api`
+
+| Method   | Endpoint                       | Description           |
+|----------|--------------------------------|-----------------------|
+| `GET`    | `/items`                       | Get all items         |
+| `GET`    | `/items/{id}`                  | Get item by ID        |
+| `GET`    | `/items/category/{categoryId}` | Get items by category |
+| `POST`   | `/items`                       | Create new item       |
+| `PUT`    | `/items/{id}`                  | Update existing item  |
+| `DELETE` | `/items/{id}`                  | Delete an item        |
+ 
+
+---
+
+# 🧰 Git Commands
+
+A quick reference for the most commonly used Git commands.
+
+## ⚙️ Initial Setup
+
+```bash
+git config --global user.name "Your Name"        # Set your name
+git config --global user.email "you@email.com"   # Set your email
+```
+
+## 📁 Starting a Repository
+
+```bash
+git init                    # Initialize a new local repository
+git clone <url>             # Clone a remote repository to your machine
+```
+
+## 📸 Staging & Committing
+
+```bash
+git status                  # Check the status of your working directory
+git add .                   # Stage all changed files
+git commit -m "message"     # Commit staged changes with a message
+```
+
+## 🌐 Working with Remotes
+
+```bash
+git remote -v                        # List remote connections
+git remote add main <url>            # Add a remote called origin
+git push main                        # Push branch to remote
+git push -u main                     # Push and set upstream tracking
+git pull                             # Fetch and merge from remote
+```
+
+---
+
+## 👨‍💻 Contributors
+
+| Name                | StudentID                           | System              |
+|---------------------|-------------------------------------|---------------------|
+| Ranaweera R.H.H.V.  | IT25102853 | Payment Management  |
+| Isaipriya K.        | IT25103512 | Booking Management  |
+| Gamage C.M.         | IT25101509 | Feedback Management |
+| Mathushan K.        | IT25103450 | User Management     |
+| Sandanayake T.U.A.  | IT25101625 | Vendor Management   |
+| Jayasinghe W.M.S.B. | IT25100771 | Package Management  |
 
 
 This project is developed for academic purposes only.
