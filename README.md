@@ -1,3 +1,5 @@
+<img width="1280" height="320" alt="Github Banner" src="https://github.com/user-attachments/assets/568267df-ef81-4384-821c-a06260f8e782" />
+
 # 💍 EverGlow – Wedding Planning & Vendor Booking System
 
 ## 📌 Project Overview
@@ -28,7 +30,7 @@ The platform includes key modules such as **User Management, Vendor Management, 
 ### 🔹 Tools
 
 * IntelliJ IDEA
-* HTTPie (API Testing)
+* Postman (API Testing)
 * Git & GitHub (Version Control)
 
 ---
