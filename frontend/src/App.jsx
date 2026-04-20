@@ -4,80 +4,68 @@ import PaymentList   from "./pages/payments/PaymentList"
 import PaymentForm   from "./pages/payments/PaymentForm"
 import PaymentDetail from "./pages/payments/PaymentDetail"
 
-// Landing page extracted as its own component
 function Home() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F9EAE8" }}>
+        <section style={{position: "relative",width: "100%",height: "95vh",overflow: "hidden",display: "flex",alignItems: "center",justifyContent: "center",}}>
+              {/* Background Image*/}
+              <div style={{position: "absolute",inset: 0,backgroundImage: "url('/hero_bg.png')",backgroundSize: "cover",backgroundPosition: "center",}} />
 
-          {/* Hero Section */}
-          <section className="text-center px-6 py-24" style={{ backgroundColor: "#F9EAE8" }}>
-            <p
-              className="text-xs tracking-[0.25em] uppercase font-sans font-medium mb-4"
-              style={{ color: "#C9A84C" }}
-            >
-              Your Perfect Day Awaits
-            </p>
-            <h2
-              className="text-5xl font-bold leading-tight font-serif"
-              style={{ color: "#2C2C2C" }}
-            >
-              Plan Your Dream Wedding with{" "}
-              <span style={{ color: "#C0392B" }}>Everglow</span>
-            </h2>
-            <p className="mt-6 max-w-2xl mx-auto text-base" style={{ color: "#2C2C2C", opacity: 0.6 }}>
-              A complete wedding planning and vendor booking management system.
-              Manage venues, photographers, catering, and more — all in one place.
-            </p>
+              {/* Dark Overlay */}
+              <div style={{position: "absolute",inset: 0,background: "linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.55) 50%, rgba(0,0,0,0.70) 100%)",}} />
 
-            {/* Decorative divider */}
-            <div className="flex items-center justify-center gap-3 my-8">
-              <div className="h-px w-16" style={{ backgroundColor: "#C9A84C", opacity: 0.4 }} />
-              <span style={{ color: "#C9A84C", opacity: 0.6 }} className="text-lg">✦</span>
-              <div className="h-px w-16" style={{ backgroundColor: "#C9A84C", opacity: 0.4 }} />
-            </div>
+              {/* Content */}
+              <div style={{ position: "relative", zIndex: 2, textAlign: "center", padding: "0 24px" }}>
 
-            <div className="mt-2 flex items-center justify-center gap-4">
-              <button
-                className="px-7 py-3 rounded-sm text-sm font-sans font-medium text-white shadow-md transition-all duration-200 hover:shadow-lg"
-                style={{ backgroundColor: "#C0392B" }}
-                onMouseEnter={e => e.target.style.backgroundColor = "#E74C3C"}
-                onMouseLeave={e => e.target.style.backgroundColor = "#C0392B"}
-              >
-                Explore Vendors
-              </button>
-              <button
-                className="px-7 py-3 rounded-sm text-sm font-sans font-medium transition-all duration-200"
-                style={{
-                  border: "1px solid #C9A84C",
-                  color: "#C9A84C",
-                  backgroundColor: "transparent",
-                }}
-                onMouseEnter={e => e.target.style.backgroundColor = "#C9A84C22"}
-                onMouseLeave={e => e.target.style.backgroundColor = "transparent"}
-              >
-                View Packages
-              </button>
-            </div>
-          </section>
+                {/* Decorative divider */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "14px", marginBottom: "28px" }}>
+                  <span style={{ display: "block", width: "60px", height: "1px", background: "rgba(255,255,255,0.5)" }} />
+                  <span style={{ fontFamily: "var(--font-body)", fontSize: "13px", fontWeight: 300, letterSpacing: "0.3em", color: "rgba(255,255,255,0.7)", textTransform: "uppercase" }}>
+                    Everglow
+                  </span>
+                  <span style={{ display: "block", width: "60px", height: "1px", background: "rgba(255,255,255,0.5)" }} />
+                </div>
+
+                {/* Main Heading */}
+                <h1 style={{fontFamily: "var(--font-brand)",fontSize: "clamp(38px, 6vw, 76px)",fontWeight: 300,fontStyle: "italic",color: "#ffffff",lineHeight: 1.15,letterSpacing: "0.02em",marginBottom: "24px",}}>
+                  Where Love Stories<br />Begin to Take Shape
+                </h1>
+
+                {/* Subtext */}
+                <p style={{fontFamily: "var(--font-body)",fontSize: "clamp(13px, 1.5vw, 15px)",fontWeight: 300,color: "rgba(255,255,255,0.75)",letterSpacing: "0.18em",textTransform: "uppercase",marginBottom: "44px",}}>
+                  Your Perfect Day Awaits
+                </p>
+
+                {/* CTA Buttons */}
+                <div style={{ display: "inline-flex", gap: "16px" }}>
+                  <button
+                    style={{ fontFamily: "var(--font-body)", fontSize: "12px", fontWeight: 400, letterSpacing: "0.18em", textTransform: "uppercase", background: "#C0392B", color: "#fff", border: "none", padding: "14px 32px", cursor: "pointer" }}
+                    onMouseEnter={e => e.target.style.background = "#E74C3C"}
+                    onMouseLeave={e => e.target.style.background = "#C0392B"}
+                  >
+                    Explore Vendors
+                  </button>
+                  <button
+                    style={{ fontFamily: "var(--font-body)", fontSize: "12px", fontWeight: 400, letterSpacing: "0.18em", textTransform: "uppercase", background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,0.5)", padding: "14px 32px", cursor: "pointer" }}
+                    onMouseEnter={e => e.target.style.borderColor = "rgba(255,255,255,0.9)"}
+                    onMouseLeave={e => e.target.style.borderColor = "rgba(255,255,255,0.5)"}
+                  >
+                    View Packages
+                  </button>
+                </div>
+              </div>
+        </section>
 
           {/* Features */}
-          <section
-            className="px-10 py-20"
-            style={{ backgroundColor: "#ffffff" }}
-          >
-            {/* Section heading */}
+          <section className="px-10 py-20" style={{ backgroundColor: "#ffffff" }}>
             <div className="text-center mb-12">
-              <p
-                className="text-xs tracking-[0.2em] uppercase font-sans font-medium mb-2"
-                style={{ color: "#C9A84C" }}
-              >
+              <p className="text-xs tracking-[0.2em] uppercase font-sans font-medium mb-2" style={{ color: "#C9A84C" }}>
                 Everything You Need
               </p>
               <h3 className="text-2xl font-serif" style={{ color: "#2C2C2C" }}>
                 Built for Your Big Day
               </h3>
             </div>
-
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {[
                 {
@@ -121,16 +109,27 @@ function Home() {
             </div>
           </section>
 
+          <section className="w-full py-16 bg-white">
+              <div className="max-w-6xl mx-auto px-6">
+                  {/* Heading */}
+                  <div className="text-center mb-12">
+                      <h2 className="text-4xl font-serif">Our Gallery</h2>
+                      <p className="text-gray-500 mt-3">Capturing timeless moments of love & celebration</p>
+                  </div>
+                  {/* Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <div className="overflow-hidden shadow-md group"><img src="/img01.jpg" alt="gallery" className="w-full object-cover"/></div>
+                      <div className="overflow-hidden shadow-md group"><img src="/img02.jpg" alt="gallery" className="w-full object-cover"/></div>
+                      <div className="overflow-hidden shadow-md group"><img src="/img03.jpg" alt="gallery" className="w-full object-cover"/></div>
+                      <div className="overflow-hidden shadow-md group"><img src="/img04.jpg" alt="gallery" className="w-full object-cover"/></div>
+                      <div className="overflow-hidden shadow-md group"><img src="/img05.jpg" alt="gallery" className="w-full object-cover"/></div>
+                      <div className="overflow-hidden shadow-md group"><img src="/img06.jpg" alt="gallery" className="w-full object-cover"/></div>
+                  </div>
+              </div>
+          </section>
+
           {/* Footer */}
-          <footer
-            className="text-center py-10 text-sm font-sans"
-            style={{
-              borderTop: "1px solid #EDE0DF",
-              backgroundColor: "#F9EAE8",
-              color: "#2C2C2C",
-              opacity: 0.5,
-            }}
-          >
+          <footer className="text-center py-10 text-sm font-sans" style={{borderTop: "1px solid #EDE0DF", backgroundColor: "#F9EAE8",color: "#2C2C2C",opacity: 0.5,}}>
             © {new Date().getFullYear()} Everglow. All rights reserved.
           </footer>
         </div>
@@ -140,18 +139,14 @@ function Home() {
 function App() {
   return (
     <BrowserRouter>
-      <header className="flex justify-between items-center px-10 py-6" style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #EDE0DF" }}>
-        <Link to="/"
-            style={{
-              fontFamily: "var(--font-brand)",
-              fontSize: "26px",
-              fontWeight: 600,
-              letterSpacing: "0.06em",
-              color: "#C0392B",
-              textDecoration: "none",
-            }}>
-            Everglow
-          </Link>
+      <header className="flex justify-between items-center px-10 py-6" style={{ backgroundColor: "#F9EAE8", borderBottom: "1px solid #EDE0DF" }}>
+        <Link to="/">
+            <img
+              src="/everglow_1.png"
+              alt="Everglow"
+              style={{ height: "20px", width: "auto", objectFit: "contain" }}
+            />
+        </Link>
 
         <nav className="space-x-7 text-sm font-sans font-medium">
           {[
