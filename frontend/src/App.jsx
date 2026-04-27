@@ -3,6 +3,7 @@ import './App.css'
 import PaymentList   from "./pages/payments/PaymentList"
 import PaymentForm   from "./pages/payments/PaymentForm"
 import PaymentDetail from "./pages/payments/PaymentDetail"
+import PackagesPage from "./pages/packages/PackagesPage";
 
 function Home() {
   return (
@@ -191,6 +192,7 @@ function App() {
         <Route path="/payments/create"   element={<PaymentForm />} />
         <Route path="/payments/:id/edit" element={<PaymentForm />} />
         <Route path="/payments/:id"      element={<PaymentDetail />} />
+        <Route path="/packages" element={<PackagesPage />} />
       </Routes>
     </BrowserRouter>
   )
