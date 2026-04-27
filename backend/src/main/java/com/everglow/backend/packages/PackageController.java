@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/packages")
-@CrossOrigin(origins = "http://localhost:5173")  // Vite dev server
+@CrossOrigin(origins = "*")  // Vite dev server
 public class PackageController {
 
     private final PackageService packageService;

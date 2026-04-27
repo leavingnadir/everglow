@@ -1,7 +1,6 @@
 // src/hooks/usePackages.js
 // Custom hook — manages all package state and CRUD operations.
 // Components just call this hook and get clean state + handlers back.
-
 import { useState, useEffect, useCallback } from "react";
 import {
   getAllPackages,
@@ -15,8 +14,6 @@ export function usePackages() {
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState(null);
   const [success, setSuccess]     = useState(null);
-
-  // ── Fetch all ────────────────────────────────────────────────────────────
 
   const fetchPackages = useCallback(async () => {
     setLoading(true);
@@ -35,8 +32,6 @@ export function usePackages() {
     fetchPackages();
   }, [fetchPackages]);
 
-  // ── Create ───────────────────────────────────────────────────────────────
-
   const addPackage = async (packageData) => {
     setLoading(true);
     setError(null);
@@ -44,7 +39,7 @@ export function usePackages() {
       const created = await createPackage(packageData);
       setPackages((prev) => [...prev, created]);
       setSuccess("Package created successfully!");
-      clearSuccessAfterDelay();
+      setTimeout(() => setSuccess(null), 3000);
       return created;
     } catch (err) {
       setError(err.message);
@@ -54,18 +49,14 @@ export function usePackages() {
     }
   };
 
-  // ── Update ───────────────────────────────────────────────────────────────
-
   const editPackage = async (id, packageData) => {
     setLoading(true);
     setError(null);
     try {
       const updated = await updatePackage(id, packageData);
-      setPackages((prev) =>
-        prev.map((p) => (p.id === id ? updated : p))
-      );
+      setPackages((prev) => prev.map((p) => (p.id === id ? updated : p)));
       setSuccess("Package updated successfully!");
-      clearSuccessAfterDelay();
+      setTimeout(() => setSuccess(null), 3000);
       return updated;
     } catch (err) {
       setError(err.message);
@@ -75,8 +66,6 @@ export function usePackages() {
     }
   };
 
-  // ── Delete ───────────────────────────────────────────────────────────────
-
   const removePackage = async (id) => {
     setLoading(true);
     setError(null);
@@ -84,7 +73,7 @@ export function usePackages() {
       await deletePackage(id);
       setPackages((prev) => prev.filter((p) => p.id !== id));
       setSuccess("Package deleted.");
-      clearSuccessAfterDelay();
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -92,23 +81,9 @@ export function usePackages() {
     }
   };
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
-
-  const clearSuccessAfterDelay = () => {
-    setTimeout(() => setSuccess(null), 3000);
-  };
-
-  const clearError = () => setError(null);
-
   return {
-    packages,
-    loading,
-    error,
-    success,
-    fetchPackages,
-    addPackage,
-    editPackage,
-    removePackage,
-    clearError,
+    packages, loading, error, success,
+    fetchPackages, addPackage, editPackage, removePackage,
+    clearError: () => setError(null),
   };
 }
