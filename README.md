@@ -213,6 +213,19 @@ git pull                             # Fetch and merge from remote
 
 ---
 
+## Members EndPoints
+
+Package Management Admin
+```
+http://localhost:5173/admin/packages
+```
+Package Management User 
+```
+http://localhost:5173/packages
+```
+
+---
+
 ## 👨‍💻 Contributors
 
 | Name                | StudentID                           | System              |
