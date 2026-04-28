@@ -114,66 +114,76 @@ function Home() {
     </div>
   )
 }
-
 function App() {
   return (
     <BrowserRouter>
-      <header className="flex justify-between items-center px-10 py-6" style={{ backgroundColor: "#F9EAE8", borderBottom: "1px solid #EDE0DF" }}>
-        <Link to="/">
-          <img src="/everglow_1.png" alt="Everglow" style={{ height: "20px", width: "auto", objectFit: "contain" }} />
-        </Link>
+          {/* Navbar*/}
+          <header
+            className="flex justify-between items-center px-10 py-6"
+            style={{ backgroundColor: "#F9EAE8", borderBottom: "1px solid #EDE0DF" }}
+          >
+            {/* Logo */}
+            <Link to="/">
+              <img
+                src="/everglow_1.png"
+                alt="Everglow"
+                style={{ height: "20px", width: "auto", objectFit: "contain" }}
+              />
+            </Link>
+            <nav className="space-x-7 text-sm font-sans font-medium">
+              {[
+                { label: "Home",     to: "/",         isLink: true  },
+                { label: "Venues",   to: "#",         isLink: false },
+                { label: "Packages", to: "/packages", isLink: true  },
+                { label: "Bookings", to: "#",         isLink: false },
+              ].map((item) =>
+                      item.isLink ? (
+                        <Link
+                          key={item.label} to={item.to}
+                          className="transition-colors duration-150"
+                          style={{ color: "#2C2C2C" }}
+                          onMouseEnter={e => e.target.style.color = "#C0392B"}
+                          onMouseLeave={e => e.target.style.color = "#2C2C2C"}
+                        >
+                          {item.label}
+                        </Link>
+                      ) : (
+                        <a
+                          key={item.label} href={item.to}
+                          className="transition-colors duration-150"
+                          style={{ color: "#2C2C2C" }}
+                          onMouseEnter={e => e.target.style.color = "#C0392B"}
+                          onMouseLeave={e => e.target.style.color = "#2C2C2C"}
+                        >
+                          {item.label}
+                        </a>
+                      )
+                    )}
+                  </nav>
 
-        <nav className="space-x-7 text-sm font-sans font-medium">
-          {[
-            { label: "Home",     to: "/",         isLink: true },
-            { label: "Venues",   to: "#",         isLink: false },
-            { label: "Packages", to: "/packages", isLink: true },
-            { label: "Bookings", to: "#",         isLink: false },
-            { label: "Payments", to: "/payments", isLink: true },
-          ].map((item) =>
-            item.isLink ? (
-              <Link
-                key={item.label} to={item.to}
-                className="transition-colors duration-150"
-                style={{ color: "#2C2C2C" }}
-                onMouseEnter={e => e.target.style.color = "#C0392B"}
-                onMouseLeave={e => e.target.style.color = "#2C2C2C"}
-              >
-                {item.label}
-              </Link>
-            ) : (
-              <a
-                key={item.label} href={item.to}
-                className="transition-colors duration-150"
-                style={{ color: "#2C2C2C" }}
-                onMouseEnter={e => e.target.style.color = "#C0392B"}
-                onMouseLeave={e => e.target.style.color = "#2C2C2C"}
-              >
-                {item.label}
-              </a>
-            )
-          )}
-        </nav>
+            {/* CTA Button */}
+            <button className="px-5 py-2 rounded-sm text-sm font-sans font-medium text-white shadow-sm transition-all duration-200 hover:shadow-md"
+              style={{ backgroundColor: "#C0392B" }}
+              onMouseEnter={e => e.target.style.backgroundColor = "#E74C3C"}
+              onMouseLeave={e => e.target.style.backgroundColor = "#C0392B"}
+            >
+              Get Started
+            </button>
+          </header>
 
-        <button
-          className="px-5 py-2 rounded-sm text-sm font-sans font-medium text-white shadow-sm transition-all duration-200 hover:shadow-md"
-          style={{ backgroundColor: "#C0392B" }}
-          onMouseEnter={e => e.target.style.backgroundColor = "#E74C3C"}
-          onMouseLeave={e => e.target.style.backgroundColor = "#C0392B"}
-        >
-          Get Started
-        </button>
-      </header>
+          {/* Routes */}
+          <Routes>
+            {/* Customer pages */}
+            <Route path="/"         element={<Home />} />
+            <Route path="/packages" element={<PackagesPage />} />
 
-      <Routes>
-        <Route path="/"                  element={<Home />} />
-        <Route path="/payments"          element={<PaymentList />} />
-        <Route path="/payments/create"   element={<PaymentForm />} />
-        <Route path="/payments/:id/edit" element={<PaymentForm />} />
-        <Route path="/payments/:id"      element={<PaymentDetail />} />
-        <Route path="/packages"          element={<PackagesPage />} />
-        <Route path="/admin/packages" element={<AdminPackagesPage />} />
-      </Routes>
+            {/* Admin only — not linked in navbar */}
+            <Route path="/payments"          element={<PaymentList />} />
+            <Route path="/payments/create"   element={<PaymentForm />} />
+            <Route path="/payments/:id/edit" element={<PaymentForm />} />
+            <Route path="/payments/:id"      element={<PaymentDetail />} />
+            <Route path="/admin/packages"    element={<AdminPackagesPage />} />
+          </Routes>
     </BrowserRouter>
   )
 }

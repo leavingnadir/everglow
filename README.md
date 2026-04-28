@@ -212,9 +212,12 @@ git pull                             # Fetch and merge from remote
 ```
 
 ---
-
 ## Members EndPoints
 
+Payment Management Admin
+```
+http://localhost:5173/payments
+```
 Package Management Admin
 ```
 http://localhost:5173/admin/packages
