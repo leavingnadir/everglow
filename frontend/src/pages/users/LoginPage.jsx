@@ -42,7 +42,7 @@ export default function LoginPage() {
 
       // Redirect based on role
       if (userData.role === "ADMIN") {
-        navigate("/admin/users");
+        navigate("/admin");
       } else {
         navigate("/user/profile");
       }

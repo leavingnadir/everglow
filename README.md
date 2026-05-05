@@ -212,28 +212,11 @@ git pull                             # Fetch and merge from remote
 ```
 
 ---
-## Members EndPoints
+## Admin Credentials:
 
-Payment Management Admin
-```
-http://localhost:5173/payments
-```
-Package Management Admin
-```
-http://localhost:5173/admin/packages
-```
-Package Management User 
-```
-http://localhost:5173/packages
-```
-Admin Credentials:
 Email: admin@everglow.com
 Password: 123
 
-Admin Panel
-```
-http://localhost:5173/admin/users
-```
 ---
 
 ## 👨‍💻 Contributors

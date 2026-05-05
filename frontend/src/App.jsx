@@ -13,6 +13,10 @@ import LoginPage         from "./pages/users/LoginPage"
 import UserProfilePage   from "./pages/users/UserProfilePage"
 import AdminUsersPage    from "./pages/users/AdminUsersPage"
 
+// Admin pages
+import AdminPanel          from "./pages/admin/AdminPanel"
+import ProtectedAdminRoute from "./pages/admin/ProtectedAdminRoute"
+
 // Auth context
 import { AuthProvider, useAuth } from "./context/AuthContext"
 
@@ -101,9 +105,9 @@ function Home() {
   )
 }
 
-// ─── Navbar — separate component so it can use useNavigate & useAuth ─────────
+// ─── Navbar ───────────────────────────────────────────────────────────────────
 function Navbar() {
-  const navigate       = useNavigate()   // ✅ useNavigate inside a component
+  const navigate = useNavigate()
   const { user, isAdmin, logout } = useAuth()
 
   return (
@@ -143,8 +147,8 @@ function Navbar() {
         )}
 
         {/* Admin Panel link — only visible when logged in as ADMIN */}
-        {user && isAdmin() && (
-          <Link to="/admin/users"
+        {user && isAdmin && (
+          <Link to="/admin"
             className="transition-colors duration-150" style={{ color: "#C0392B", fontWeight: 600 }}
             onMouseEnter={e => e.target.style.color = "#E74C3C"}
             onMouseLeave={e => e.target.style.color = "#C0392B"}>
@@ -155,7 +159,6 @@ function Navbar() {
 
       {/* Right side — auth-aware */}
       {user ? (
-        // Logged in
         <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
           <Link to="/user/profile"
             style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "#2C2C2C", textDecoration: "none" }}
@@ -173,7 +176,6 @@ function Navbar() {
           </button>
         </div>
       ) : (
-        // Not logged in — Get Started → /login
         <button
           onClick={() => navigate("/login")}
           className="px-5 py-2 rounded-sm text-sm font-sans font-medium text-white shadow-sm transition-all duration-200 hover:shadow-md"
@@ -187,32 +189,53 @@ function Navbar() {
   )
 }
 
-// ─── App ─────────────────────────────────────────────────────────────────────
+// ─── App ──────────────────────────────────────────────────────────────────────
 function App() {
   return (
-    <AuthProvider>                     {/* ✅ wraps everything so useAuth works */}
+    <AuthProvider>
       <BrowserRouter>
-        <Navbar />                     {/* ✅ Navbar is its own component now */}
+        <Navbar />
         <Routes>
           {/* Public */}
           <Route path="/"      element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
 
-          {/* Packages */}
-          <Route path="/packages"       element={<PackagesPage />} />
-          <Route path="/admin/packages" element={<AdminPackagesPage />} />
+          {/* Packages — public browse */}
+          <Route path="/packages" element={<PackagesPage />} />
 
           {/* User */}
-          <Route path="/user/profile"  element={<UserProfilePage />} />
-
-          {/* Admin users */}
-          <Route path="/admin/users"   element={<AdminUsersPage />} />
+          <Route path="/user/profile" element={<UserProfilePage />} />
 
           {/* Payments */}
           <Route path="/payments"          element={<PaymentList />} />
           <Route path="/payments/create"   element={<PaymentForm />} />
           <Route path="/payments/:id/edit" element={<PaymentForm />} />
           <Route path="/payments/:id"      element={<PaymentDetail />} />
+
+          {/* ── Admin (all protected) ── */}
+          <Route path="/admin" element={
+            <ProtectedAdminRoute>
+              <AdminPanel />
+            </ProtectedAdminRoute>
+          } />
+
+          <Route path="/admin/users" element={
+            <ProtectedAdminRoute>
+              <AdminUsersPage />
+            </ProtectedAdminRoute>
+          } />
+
+          <Route path="/admin/packages" element={
+            <ProtectedAdminRoute>
+              <AdminPackagesPage />
+            </ProtectedAdminRoute>
+          } />
+
+           <Route path="/admin/payments" element={
+             <ProtectedAdminRoute>
+               <PaymentList />
+             </ProtectedAdminRoute>
+           } />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

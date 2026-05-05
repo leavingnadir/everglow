@@ -1,5 +1,4 @@
-// src/context/AuthContext.jsx
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
@@ -20,8 +19,9 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("everglow_user");
   };
 
-  const isAdmin = () => user?.role === "ADMIN";
-  const isLoggedIn = () => !!user;
+  // Boolean values instead of functions — easier to use in JSX conditions
+  const isAdmin = user?.role === "ADMIN";
+  const isLoggedIn = !!user;
 
   return (
     <AuthContext.Provider value={{ user, login, logout, isAdmin, isLoggedIn }}>

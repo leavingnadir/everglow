@@ -21,11 +21,21 @@ public class Package {
     // ── Enums ─────────────────────────────────────────────────────────────────
 
     public enum Tier {
-        GOLD, PLATINUM, SILVER
+        SILVER,
+        GOLD,
+        PLATINUM,
+        DIAMOND
     }
 
     public enum VendorCategory {
-        VIDEOGRAPHY, FLORA, CATERING, PHOTOGRAPHY, SOUNDS_AND_LIGHTING, DANCING_TEAM
+        VIDEOGRAPHY,
+        FLORA,
+        CATERING,
+        PHOTOGRAPHY,
+        SOUNDS_AND_LIGHTING,
+        DANCING_TEAM,
+        DRONE_SHOOT,
+        BUFFET_CATERING
     }
 
     // ── Fields ────────────────────────────────────────────────────────────────

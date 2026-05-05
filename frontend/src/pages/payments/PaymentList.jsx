@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import paymentService from "../../services/paymentService";
 
 const statusConfig = {
@@ -38,7 +39,8 @@ const methodIcons = {
   ),
   BANK_TRANSFER: (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M12 10v11M16 10v11" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M12 10v11M16 10v11"
+        strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   ),
   CASH: (
@@ -51,22 +53,22 @@ const methodIcons = {
 
 export default function PaymentList() {
   const navigate = useNavigate();
-  const [payments, setPayments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [filterStatus, setFilterStatus] = useState("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
+  const { isAdmin } = useAuth();
 
-  useEffect(() => {
-    fetchPayments();
-  }, []);
+  const [payments, setPayments]         = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [error, setError]               = useState(null);
+  const [filterStatus, setFilterStatus] = useState("ALL");
+  const [searchQuery, setSearchQuery]   = useState("");
+
+  useEffect(() => { fetchPayments(); }, []);
 
   const fetchPayments = async () => {
     try {
       setLoading(true);
       const data = await paymentService.getAllPayments();
       setPayments(data);
-    } catch (err) {
+    } catch {
       setError("Unable to load payments. Please try again.");
     } finally {
       setLoading(false);
@@ -98,16 +100,48 @@ export default function PaymentList() {
 
   return (
     <div className="min-h-screen bg-[#F9EAE8] font-serif">
+
       {/* Top bar */}
       <div className="bg-white border-b border-[#EDE0DF] px-8 py-5 flex items-center justify-between shadow-sm">
-        <div>
-          <p className="text-xs tracking-[0.2em] uppercase text-[#C9A84C] font-sans font-medium">
-            Everglow
-          </p>
-          <h1 className="text-2xl text-[#2C2C2C] mt-0.5 tracking-wide">
-            Payment Records
-          </h1>
+        <div className="flex items-center gap-6">
+
+          {/* ✅ Back to Admin Panel button — only shown to admins */}
+          {isAdmin && (
+            <button
+              onClick={() => navigate("/admin")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "none",
+                border: "1px solid #EDE0DF",
+                padding: "7px 14px",
+                cursor: "pointer",
+                fontFamily: "var(--font-body)",
+                fontSize: "11px",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+                color: "#2C2C2C",
+                borderRadius: "2px",
+                transition: "border-color 0.2s",
+              }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = "#C9A84C"}
+              onMouseLeave={e => e.currentTarget.style.borderColor = "#EDE0DF"}
+            >
+              ← Admin Panel
+            </button>
+          )}
+
+          <div>
+            <p className="text-xs tracking-[0.2em] uppercase text-[#C9A84C] font-sans font-medium">
+              Everglow
+            </p>
+            <h1 className="text-2xl text-[#2C2C2C] mt-0.5 tracking-wide">
+              Payment Records
+            </h1>
+          </div>
         </div>
+
         <button
           onClick={() => navigate("/payments/create")}
           className="flex items-center gap-2 bg-[#C0392B] hover:bg-[#E74C3C] text-white text-sm font-sans font-medium px-5 py-2.5 rounded-sm transition-all duration-200 tracking-wide shadow-md hover:shadow-lg"
@@ -120,36 +154,19 @@ export default function PaymentList() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
-            {
-              label: "Total Collected",
-              value: `$${totalRevenue.toLocaleString()}`,
-              accent: "#C9A84C",
-            },
-            {
-              label: "Total Records",
-              value: payments.length,
-              accent: "#C0392B",
-            },
-            {
-              label: "Pending",
-              value: payments.filter((p) => p.status === "PENDING").length,
-              accent: "#C9A84C",
-            },
+            { label: "Total Collected", value: `$${totalRevenue.toLocaleString()}`, accent: "#C9A84C" },
+            { label: "Total Records",   value: payments.length,                      accent: "#C0392B" },
+            { label: "Pending",         value: payments.filter(p => p.status === "PENDING").length, accent: "#C9A84C" },
           ].map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-white border border-[#EDE0DF] rounded-sm px-6 py-5 shadow-sm"
-            >
+            <div key={stat.label} className="bg-white border border-[#EDE0DF] rounded-sm px-6 py-5 shadow-sm">
               <p className="text-xs uppercase tracking-[0.15em] text-[#2C2C2C]/50 font-sans">
                 {stat.label}
               </p>
-              <p
-                className="text-3xl mt-1 font-light"
-                style={{ color: stat.accent }}
-              >
+              <p className="text-3xl mt-1 font-light" style={{ color: stat.accent }}>
                 {stat.value}
               </p>
             </div>
@@ -161,9 +178,7 @@ export default function PaymentList() {
           <div className="relative flex-1 min-w-[220px]">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#2C2C2C]/30"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24"
             >
               <circle cx="11" cy="11" r="8" strokeWidth="1.5" />
               <path d="m21 21-4.35-4.35" strokeWidth="1.5" strokeLinecap="round" />
@@ -200,9 +215,7 @@ export default function PaymentList() {
               <div className="w-8 h-8 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : error ? (
-            <div className="text-center py-20 text-[#C0392B] font-sans text-sm">
-              {error}
-            </div>
+            <div className="text-center py-20 text-[#C0392B] font-sans text-sm">{error}</div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-20 text-[#2C2C2C]/40 font-sans text-sm">
               No payment records found.
@@ -211,26 +224,20 @@ export default function PaymentList() {
             <table className="w-full text-sm font-sans">
               <thead>
                 <tr className="border-b border-[#EDE0DF] bg-[#F9EAE8]/60">
-                  {["Booking ID", "Vendor", "Amount", "Method", "Date", "Status", ""].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        className="text-left text-xs tracking-[0.12em] uppercase text-[#2C2C2C]/50 font-medium px-5 py-3.5"
-                      >
-                        {h}
-                      </th>
-                    )
-                  )}
+                  {["Booking ID", "Vendor", "Amount", "Method", "Date", "Status", ""].map((h) => (
+                    <th key={h}
+                      className="text-left text-xs tracking-[0.12em] uppercase text-[#2C2C2C]/50 font-medium px-5 py-3.5">
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#EDE0DF]">
                 {filtered.map((payment) => {
                   const status = statusConfig[payment.status] || statusConfig.PENDING;
                   return (
-                    <tr
-                      key={payment.id}
-                      className="hover:bg-[#F9EAE8]/40 transition-colors duration-100"
-                    >
+                    <tr key={payment.id}
+                      className="hover:bg-[#F9EAE8]/40 transition-colors duration-100">
                       <td className="px-5 py-4 text-[#C0392B] font-medium">
                         #{payment.bookingId}
                       </td>
@@ -239,9 +246,7 @@ export default function PaymentList() {
                       </td>
                       <td className="px-5 py-4 font-medium text-[#2C2C2C]">
                         <span className="text-[#C9A84C] mr-0.5">$</span>
-                        {payment.amount?.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                        })}
+                        {payment.amount?.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                       </td>
                       <td className="px-5 py-4">
                         <span className="flex items-center gap-1.5 text-[#2C2C2C]/60">
@@ -252,16 +257,12 @@ export default function PaymentList() {
                       <td className="px-5 py-4 text-[#2C2C2C]/60">
                         {payment.paymentDate
                           ? new Date(payment.paymentDate).toLocaleDateString("en-SG", {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
+                              day: "numeric", month: "short", year: "numeric",
                             })
                           : "—"}
                       </td>
                       <td className="px-5 py-4">
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.bg} ${status.text}`}
-                        >
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.bg} ${status.text}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
                           {status.label}
                         </span>
@@ -274,7 +275,8 @@ export default function PaymentList() {
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                           </button>
                           <button
@@ -283,7 +285,8 @@ export default function PaymentList() {
                             title="Delete"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                           </button>
                         </div>
