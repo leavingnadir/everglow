@@ -226,7 +226,14 @@ Package Management User
 ```
 http://localhost:5173/packages
 ```
+Admin Credentials:
+Email: admin@everglow.com
+Password: 123
 
+Admin Panel
+```
+http://localhost:5173/admin/users
+```
 ---
 
 ## 👨‍💻 Contributors
