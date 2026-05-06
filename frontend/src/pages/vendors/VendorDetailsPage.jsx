@@ -46,16 +46,29 @@ const VendorDetailsPage = () => {
   return (
     <div className="min-h-screen bg-white pb-20">
       {/* Header section */}
-      <div className="w-full h-64 md:h-80 relative flex items-center justify-center" style={{ backgroundColor: "#F9EAE8" }}>
-        <div className="text-center px-4 relative z-10">
-          <span className="px-3 py-1 text-xs uppercase tracking-wider rounded-full mb-4 inline-block bg-white shadow-sm" 
-                style={{ color: "#2C2C2C" }}>
+      <div
+        className="w-full h-80 md:h-96 relative flex items-end"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%), url(${vendor.imageUrl || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=80'})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="text-center px-4 relative z-10 w-full pb-12">
+          <span
+            className="px-3 py-1 text-xs uppercase tracking-wider rounded-full mb-4 inline-block"
+            style={{ background: "rgba(255,255,255,0.95)", color: "#2C2C2C" }}
+          >
             {vendor.category}
           </span>
-          <h1 className="text-4xl md:text-5xl font-serif text-gray-900">{vendor.businessName}</h1>
+          <h1 className="text-4xl md:text-5xl font-serif text-white mt-3">
+            {vendor.businessName}
+          </h1>
           <div className="flex items-center justify-center mt-4">
-            <span className="text-yellow-500 text-xl mr-2">★</span>
-            <span className="font-medium text-gray-800">{vendor.rating?.toFixed(1) || '0.0'} Rating</span>
+            <span className="text-yellow-400 text-xl mr-2">★</span>
+            <span className="font-medium text-white">
+              {vendor.rating?.toFixed(1) || '0.0'} Rating
+            </span>
           </div>
         </div>
       </div>

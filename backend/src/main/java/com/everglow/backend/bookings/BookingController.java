@@ -1,10 +1,12 @@
-package backend.src.main.java.com.everglow.backend.bookings;
+package com.everglow.backend.bookings;
+
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
+
     private final BookingService service;
 
     public BookingController(BookingService service) {

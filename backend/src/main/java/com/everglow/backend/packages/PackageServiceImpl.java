@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -16,12 +18,23 @@ import java.util.stream.Collectors;
  *   - Dependency Injection via constructor (not field injection)
  *   - DTO pattern: entity never leaves this layer
  *   - Soft delete: preserves data integrity
+ *
+ * NOTE: Sorting is done in Java instead of SQL because PostgreSQL
+ * doesn't allow ORDER BY expressions outside the SELECT DISTINCT list.
  */
 @Service
 @Transactional
 public class PackageServiceImpl implements PackageService {
 
     private final PackageRepository packageRepository;
+
+    // Tier display order: DIAMOND → PLATINUM → GOLD → SILVER
+    private static final Map<Package.Tier, Integer> TIER_ORDER = Map.of(
+            Package.Tier.DIAMOND,  1,
+            Package.Tier.PLATINUM, 2,
+            Package.Tier.GOLD,     3,
+            Package.Tier.SILVER,   4
+    );
 
     // Constructor injection — preferred over @Autowired on field (easier to test)
     @Autowired
@@ -36,6 +49,9 @@ public class PackageServiceImpl implements PackageService {
     public List<PackageDTO> getAllPackages() {
         return packageRepository.findAllActiveOrderedByTier()
                 .stream()
+                .sorted(Comparator
+                        .comparingInt((Package p) -> TIER_ORDER.getOrDefault(p.getTier(), 99))
+                        .thenComparing(Package::getPrice, Comparator.reverseOrder()))
                 .map(PackageDTO::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -56,6 +72,7 @@ public class PackageServiceImpl implements PackageService {
     public List<PackageDTO> getPackagesByTier(Package.Tier tier) {
         return packageRepository.findByTierOrderByPriceDesc(tier)
                 .stream()
+                .sorted(Comparator.comparing(Package::getPrice).reversed())
                 .map(PackageDTO::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -67,8 +84,8 @@ public class PackageServiceImpl implements PackageService {
         // Validate no duplicate name
         if (packageRepository.existsByNameIgnoreCase(packageDTO.getName())) {
             throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "A package with the name '" + packageDTO.getName() + "' already exists."
+                    HttpStatus.CONFLICT,
+                    "A package with the name '" + packageDTO.getName() + "' already exists."
             );
         }
 
@@ -88,8 +105,8 @@ public class PackageServiceImpl implements PackageService {
         if (!existing.getName().equalsIgnoreCase(packageDTO.getName())
                 && packageRepository.existsByNameIgnoreCase(packageDTO.getName())) {
             throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "A package with the name '" + packageDTO.getName() + "' already exists."
+                    HttpStatus.CONFLICT,
+                    "A package with the name '" + packageDTO.getName() + "' already exists."
             );
         }
 

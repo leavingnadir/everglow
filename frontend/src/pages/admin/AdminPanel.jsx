@@ -11,6 +11,13 @@ const SECTIONS = [
     route: "/admin/users",
   },
   {
+    key: "vendors",                                          // ✅ NEW
+    title: "Vendor Management",
+    description: "Manage vendor partners — photographers, caterers, decorators and more.",
+    icon: "🏢",
+    route: "/admin/vendors",
+  },
+  {
     key: "payments",
     title: "Payment Management",
     description: "Track transactions, refunds and revenue. Review payment history by user.",

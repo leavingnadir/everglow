@@ -1,37 +1,33 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const VENDOR_NAMES = {
-  1: "Luna Venue",
-  2: "Bloom Photo Co.",
-  3: "Petal & Co.",
-  4: "Harmony Catering",
-};
+import { fetchBookings } from "../../services/bookingService";
+import { fetchVendors } from "../../services/vendorService";
 
 export default function BookingHistory() {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
+  const [vendorMap, setVendorMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      setLoading(true);
+    const load = async () => {
       try {
-        const response = await fetch("/api/bookings");
-        if (!response.ok) {
-          throw new Error("Failed to load bookings from backend.");
-        }
-        const data = await response.json();
-        setBookings(data);
+        const [bookingsData, vendorsData] = await Promise.all([
+          fetchBookings(),
+          fetchVendors(),
+        ]);
+        const map = {};
+        vendorsData.forEach(v => { map[v.id] = v.businessName; });
+        setVendorMap(map);
+        setBookings(bookingsData);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchBookings();
+    load();
   }, []);
 
   return (
@@ -43,9 +39,6 @@ export default function BookingHistory() {
               Everglow — Booking History
             </p>
             <h1 className="text-3xl text-[#2C2C2C] font-light">Booking History</h1>
-            <p className="mt-2 text-sm text-[#2C2C2C]/70 max-w-2xl">
-              All booking records are retrieved directly from the backend database.
-            </p>
           </div>
           <button
             onClick={() => navigate("/bookings")}
@@ -63,19 +56,15 @@ export default function BookingHistory() {
               <div className="w-8 h-8 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : error ? (
-            <div className="text-center py-20 text-[#C0392B] font-sans text-sm">
-              {error}
-            </div>
+            <div className="text-center py-20 text-[#C0392B] font-sans text-sm">{error}</div>
           ) : bookings.length === 0 ? (
-            <div className="text-center py-20 text-[#2C2C2C]/60 font-sans text-sm">
-              No bookings were found in the backend.
-            </div>
+            <div className="text-center py-20 text-[#2C2C2C]/60 font-sans text-sm">No bookings yet.</div>
           ) : (
             <table className="w-full text-sm font-sans">
               <thead className="bg-[#F9EAE8]/80">
                 <tr className="text-left text-xs uppercase tracking-[0.12em] text-[#2C2C2C]/60">
-                  {['Booking ID', 'Vendor', 'Amount', 'Event Date', 'Status', 'Created'].map((heading) => (
-                    <th key={heading} className="px-5 py-4">{heading}</th>
+                  {['Booking ID', 'Vendor', 'Amount', 'Event Date', 'Status', 'Created'].map((h) => (
+                    <th key={h} className="px-5 py-4">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -83,26 +72,14 @@ export default function BookingHistory() {
                 {bookings.map((booking) => (
                   <tr key={booking.id} className="hover:bg-[#F9EAE8]/40 transition-colors duration-150">
                     <td className="px-5 py-4 text-[#C0392B] font-medium">#{booking.id}</td>
-                    <td className="px-5 py-4">{VENDOR_NAMES[booking.vendorId] || `Vendor ${booking.vendorId}`}</td>
-                    <td className="px-5 py-4">SGD {booking.amount?.toLocaleString() || '—'}</td>
+                    <td className="px-5 py-4">{vendorMap[booking.vendorId] || `Vendor #${booking.vendorId}`}</td>
+                    <td className="px-5 py-4">LKR {booking.amount?.toLocaleString() || '—'}</td>
                     <td className="px-5 py-4">
-                      {booking.eventDate
-                        ? new Date(booking.eventDate).toLocaleDateString("en-SG", {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                          })
-                        : '—'}
+                      {booking.eventDate ? new Date(booking.eventDate).toLocaleDateString("en-GB") : '—'}
                     </td>
-                    <td className="px-5 py-4 text-[#2C2C2C]/70">{booking.status || 'REQUESTED'}</td>
+                    <td className="px-5 py-4 text-[#2C2C2C]/70">{booking.status || 'PENDING'}</td>
                     <td className="px-5 py-4 text-[#2C2C2C]/70">
-                      {booking.createdAt
-                        ? new Date(booking.createdAt).toLocaleDateString("en-SG", {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                          })
-                        : '—'}
+                      {booking.createdAt ? new Date(booking.createdAt).toLocaleDateString("en-GB") : '—'}
                     </td>
                   </tr>
                 ))}

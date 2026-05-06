@@ -13,7 +13,8 @@ const VendorForm = ({ vendorId, onSuccess }) => {
     contactEmail: '',
     contactPhone: '',
     priceRange: '',
-    rating: 0.0
+    rating: 0.0,
+    imageUrl: '',
   });
 
   const categories = ['Photography', 'Videography', 'Catering', 'Venue', 'Decoration', 'Music', 'Other'];
@@ -35,7 +36,8 @@ const VendorForm = ({ vendorId, onSuccess }) => {
         contactEmail: data.contactEmail || '',
         contactPhone: data.contactPhone || '',
         priceRange: data.priceRange || '',
-        rating: data.rating || 0.0
+        rating: data.rating || 0.0,
+        imageUrl: data.imageUrl || '',
       });
     } catch (err) {
       setError('Failed to load vendor details.');

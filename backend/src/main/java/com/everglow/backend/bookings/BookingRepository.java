@@ -1,21 +1,11 @@
-package backend.src.main.java.com.everglow.backend.bookings;
+package com.everglow.backend.bookings;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public class BookingRepository extends backend.src.main.java.com.everglow.backend.bookings.JpaRepository<Booking, Long> {
-    List<Booking> findByUserId(Long userId) {
-        return null;
-    }
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByVendorId(Long vendorId) {
-        return null;
-    }
+    List<Booking> findByUserId(Long userId);
 
-    public List<Booking> findAll() {
-        return List.of();
-    }
-
-    public Booking save(Booking b) {
-        return b;
-    }
+    List<Booking> findByVendorId(Long vendorId);
 }

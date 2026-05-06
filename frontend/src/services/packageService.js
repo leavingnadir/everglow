@@ -2,27 +2,42 @@ const PACKAGES_URL = `/api/packages`;
 
 async function handleResponse(response) {
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: response.statusText }));
+    const error = await response.json().catch(() => ({
+      message: response.statusText,
+    }));
     throw new Error(error.message || "Something went wrong");
   }
+
   if (response.status === 204) return null;
   return response.json();
 }
 
-const defaultHeaders = { "Content-Type": "application/json" };
+const defaultHeaders = {
+  "Content-Type": "application/json",
+};
+
+// ─────────────────────────────────────────────
+// API CALLS
+// ─────────────────────────────────────────────
 
 export async function getAllPackages() {
-  const res = await fetch(PACKAGES_URL, { headers: defaultHeaders });
+  const res = await fetch(PACKAGES_URL, {
+    headers: defaultHeaders,
+  });
   return handleResponse(res);
 }
 
 export async function getPackageById(id) {
-  const res = await fetch(`${PACKAGES_URL}/${id}`, { headers: defaultHeaders });
+  const res = await fetch(`${PACKAGES_URL}/${id}`, {
+    headers: defaultHeaders,
+  });
   return handleResponse(res);
 }
 
 export async function getPackagesByTier(tier) {
-  const res = await fetch(`${PACKAGES_URL}/tier/${tier}`, { headers: defaultHeaders });
+  const res = await fetch(`${PACKAGES_URL}/tier/${tier}`, {
+    headers: defaultHeaders,
+  });
   return handleResponse(res);
 }
 
@@ -52,15 +67,16 @@ export async function deletePackage(id) {
   return handleResponse(res);
 }
 
-<<<<<<< HEAD
-export const TIERS = ["GOLD", "PLATINUM", "SILVER"];
+// ─────────────────────────────────────────────
+// TIERS
+// ─────────────────────────────────────────────
 
-=======
-// ✅ Added DIAMOND to match backend enum
 export const TIERS = ["GOLD", "PLATINUM", "SILVER", "DIAMOND"];
 
-// ✅ Added DRONE_SHOOT to match backend enum
->>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
+// ─────────────────────────────────────────────
+// VENDOR CATEGORIES
+// ─────────────────────────────────────────────
+
 export const VENDOR_CATEGORIES = [
   { value: "VIDEOGRAPHY",         label: "Videography" },
   { value: "FLORA",               label: "Flora" },
@@ -68,22 +84,37 @@ export const VENDOR_CATEGORIES = [
   { value: "PHOTOGRAPHY",         label: "Photography" },
   { value: "SOUNDS_AND_LIGHTING", label: "Sounds & Lighting" },
   { value: "DANCING_TEAM",        label: "Dancing Team" },
-<<<<<<< HEAD
-];
-
-=======
   { value: "DRONE_SHOOT",         label: "Drone Shoot" },
   { value: "BUFFET_CATERING",     label: "Buffet Catering" },
 ];
 
-// ✅ Added DIAMOND tier style
->>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
+// ─────────────────────────────────────────────
+// TIER STYLES
+// ─────────────────────────────────────────────
+
 export const TIER_STYLES = {
-  GOLD:     { bg: "bg-yellow-50", border: "border-yellow-400", badge: "bg-yellow-400 text-yellow-900", icon: "🥇" },
-  PLATINUM: { bg: "bg-slate-50",  border: "border-slate-400",  badge: "bg-slate-400 text-slate-900",   icon: "🏆" },
-  SILVER:   { bg: "bg-gray-50",   border: "border-gray-400",   badge: "bg-gray-300 text-gray-800",     icon: "🥈" },
-<<<<<<< HEAD
-=======
-  DIAMOND:  { bg: "bg-cyan-50",   border: "border-cyan-400",   badge: "bg-cyan-400 text-cyan-900",     icon: "💎" }, // ✅ added
->>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
+  GOLD: {
+    bg: "bg-yellow-50",
+    border: "border-yellow-400",
+    badge: "bg-yellow-400 text-yellow-900",
+    icon: "🥇",
+  },
+  PLATINUM: {
+    bg: "bg-slate-50",
+    border: "border-slate-400",
+    badge: "bg-slate-400 text-slate-900",
+    icon: "🏆",
+  },
+  SILVER: {
+    bg: "bg-gray-50",
+    border: "border-gray-400",
+    badge: "bg-gray-300 text-gray-800",
+    icon: "🥈",
+  },
+  DIAMOND: {
+    bg: "bg-cyan-50",
+    border: "border-cyan-400",
+    badge: "bg-cyan-400 text-cyan-900",
+    icon: "💎",
+  },
 };

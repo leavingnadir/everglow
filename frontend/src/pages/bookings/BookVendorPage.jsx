@@ -1,53 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-const VENDORS = [
-  {
-    id: 1,
-    name: "Luna Venue",
-    type: "Venue",
-    location: "Singapore",
-    currency: "SGD",
-    price: 4200,
-    tagline: "Elegant spaces tailored for your ceremony.",
-  },
-  {
-    id: 2,
-    name: "Bloom Photo Co.",
-    type: "Photography",
-    location: "Singapore",
-    currency: "SGD",
-    price: 1250,
-    tagline: "Captured moments with a romantic touch.",
-  },
-  {
-    id: 3,
-    name: "Petal & Co.",
-    type: "Florist",
-    location: "Singapore",
-    currency: "SGD",
-    price: 980,
-    tagline: "Signature florals for unforgettable celebrations.",
-  },
-  {
-    id: 4,
-    name: "Harmony Catering",
-    type: "Catering",
-    location: "Singapore",
-    currency: "SGD",
-    price: 3100,
-    tagline: "Cuisine crafted for memorable wedding feasts.",
-  },
-  {
-    id: 5,
-    name: "Lotus Lanka Events",
-    type: "Venue",
-    location: "Sri Lanka",
-    currency: "LKR",
-    price: 985000,
-    tagline: "Enchanting Sri Lankan venues for timeless celebrations.",
-  },
-];
+import { fetchVendors } from "../../services/vendorService";
+import { createBooking } from "../../services/bookingService";
+import { useAuth } from "../../context/AuthContext";
 
 const initialForm = {
   eventDate: "",
@@ -60,24 +15,48 @@ const initialForm = {
 
 export default function BookVendorPage() {
   const navigate = useNavigate();
-  const [selectedVendor, setSelectedVendor] = useState(VENDORS[0]);
-  const [form, setForm] = useState(initialForm);
+  const { user } = useAuth();
+
+  const [vendors, setVendors] = useState([]);
+  const [loadingVendors, setLoadingVendors] = useState(true);
+  const [selectedVendor, setSelectedVendor] = useState(null);
+
+  const [form, setForm] = useState({
+    ...initialForm,
+    clientName: user?.name || "",
+    contactEmail: user?.email || "",
+  });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
 
+  // Load real vendors from DB
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await fetchVendors();
+        setVendors(data);
+        if (data.length > 0) setSelectedVendor(data[0]);
+      } catch (err) {
+        setSubmitError("Failed to load vendors.");
+      } finally {
+        setLoadingVendors(false);
+      }
+    };
+    load();
+  }, []);
+
   const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: null }));
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: null }));
   };
 
   const validate = () => {
     const next = {};
+    if (!selectedVendor) next.vendor = "Please select a vendor.";
     if (!form.eventDate) next.eventDate = "Please choose an event date.";
     if (!form.eventType) next.eventType = "Please select an event type.";
-    if (!form.guestCount || Number(form.guestCount) <= 0) next.guestCount = "Please enter a valid guest count.";
+    if (!form.guestCount || Number(form.guestCount) <= 0) next.guestCount = "Enter a valid guest count.";
     if (!form.clientName.trim()) next.clientName = "Please enter your name.";
     if (!form.contactEmail.trim()) next.contactEmail = "Please enter a contact email.";
     return next;
@@ -86,54 +65,55 @@ export default function BookVendorPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const validation = validate();
-    if (Object.keys(validation).length > 0) {
-      setErrors(validation);
-      return;
-    }
+    if (Object.keys(validation).length > 0) { setErrors(validation); return; }
 
     setSubmitting(true);
     setSubmitError(null);
 
-    const payload = {
-      userId: 1,
-      vendorId: selectedVendor.id,
-      eventDate: `${form.eventDate}T00:00:00`,
-      amount: selectedVendor.price,
-    };
-
     try {
-      const response = await fetch("/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      // Extract numeric price from "LKR 150,000 - 500,000" → 150000
+      const priceMatch = selectedVendor.priceRange?.match(/[\d,]+/);
+      const amount = priceMatch ? Number(priceMatch[0].replace(/,/g, "")) : 0;
 
-      if (!response.ok) {
-        throw new Error("Unable to save booking. Please try again.");
-      }
+      const payload = {
+        userId: user?.id || 1,
+        vendorId: selectedVendor.id,
+        eventDate: `${form.eventDate}T00:00:00`,
+        amount,
+        status: "PENDING",
+      };
 
-      const saved = await response.json();
+      const saved = await createBooking(payload);
+
       navigate("/bookings/confirmation", {
         state: {
           booking: {
             ...saved,
-            vendor: selectedVendor.name,
-            type: selectedVendor.type,
+            vendor: selectedVendor.businessName,
+            type: selectedVendor.category,
             guestCount: form.guestCount,
             eventType: form.eventType,
             clientName: form.clientName,
             contactEmail: form.contactEmail,
             notes: form.notes,
-            price: selectedVendor.price,
+            price: amount,
           },
         },
       });
     } catch (error) {
-      setSubmitError(error.message);
+      setSubmitError(error.message || "Unable to save booking.");
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (loadingVendors) {
+    return (
+      <div className="min-h-screen bg-[#F9EAE8] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F9EAE8] font-serif">
@@ -143,12 +123,8 @@ export default function BookVendorPage() {
             <p className="text-xs uppercase tracking-[0.25em] text-[#C9A84C] font-sans font-medium mb-2">
               Everglow — Bookings
             </p>
-            <h1 className="text-3xl text-[#2C2C2C] font-light">
-              Book Your Wedding Vendor
-            </h1>
-            <p className="mt-2 text-sm text-[#2C2C2C]/70 max-w-2xl">
-              Add a new booking and store it through the backend.
-            </p>
+            <h1 className="text-3xl text-[#2C2C2C] font-light">Book Your Wedding Vendor</h1>
+            <p className="mt-2 text-sm text-[#2C2C2C]/70">Choose a vendor and confirm your booking.</p>
           </div>
           <button
             onClick={() => navigate("/bookings/history")}
@@ -160,15 +136,20 @@ export default function BookVendorPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-6 py-10 grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+
+        {/* Vendors */}
         <section className="space-y-6">
           <div className="bg-white border border-[#EDE0DF] rounded-sm shadow-sm overflow-hidden">
             <div className="px-8 py-6 border-b border-[#EDE0DF] bg-[#F9EAE8]/80">
               <h2 className="text-xl text-[#2C2C2C] font-medium">Select a Vendor</h2>
-              <p className="text-sm text-[#2C2C2C]/70 mt-1">Choose a vendor, then submit the booking to the backend.</p>
             </div>
             <div className="grid sm:grid-cols-2 gap-4 p-5">
-              {VENDORS.map((vendor) => {
-                const isActive = selectedVendor.id === vendor.id;
+              {vendors.length === 0 ? (
+                <p className="col-span-2 text-center text-[#2C2C2C]/60 py-8">
+                  No vendors available. Add some from the admin panel.
+                </p>
+              ) : vendors.map((vendor) => {
+                const isActive = selectedVendor?.id === vendor.id;
                 return (
                   <button
                     key={vendor.id}
@@ -179,50 +160,32 @@ export default function BookVendorPage() {
                     }`}
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm uppercase tracking-[0.18em] text-[#C9A84C] font-sans font-medium">{vendor.type}</span>
-                      <span className="text-sm text-[#2C2C2C]/60">{vendor.currency || "SGD"} {vendor.price}</span>
+                      <span className="text-sm uppercase tracking-[0.18em] text-[#C9A84C] font-sans font-medium">
+                        {vendor.category}
+                      </span>
+                      <span className="text-sm text-[#2C2C2C]/60">
+                        ★ {vendor.rating?.toFixed(1) || '0.0'}
+                      </span>
                     </div>
-                    <h3 className="text-xl text-[#2C2C2C] font-semibold mb-1">{vendor.name}</h3>
-                    <p className="text-sm text-[#2C2C2C]/70 leading-relaxed">{vendor.tagline}</p>
-                    <p className="mt-4 text-xs text-[#2C2C2C]/50">Location: {vendor.location}</p>
+                    <h3 className="text-xl text-[#2C2C2C] font-semibold mb-1">{vendor.businessName}</h3>
+                    <p className="text-sm text-[#2C2C2C]/70 leading-relaxed">
+                      {vendor.description?.substring(0, 90)}{vendor.description?.length > 90 ? '…' : ''}
+                    </p>
+                    <p className="mt-4 text-xs text-[#C9A84C] font-medium">
+                      {vendor.priceRange || "Contact for pricing"}
+                    </p>
                   </button>
                 );
               })}
             </div>
           </div>
-
-          <div className="bg-white border border-[#EDE0DF] rounded-sm shadow-sm overflow-hidden">
-            <div className="px-8 py-6 border-b border-[#EDE0DF] bg-[#F9EAE8]/80">
-              <h2 className="text-xl text-[#2C2C2C] font-medium">Booking Summary</h2>
-            </div>
-            <div className="px-8 py-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm text-[#2C2C2C]/80">
-                <div>
-                  <p className="font-medium text-[#2C2C2C]">Vendor</p>
-                  <p>{selectedVendor.name}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-[#2C2C2C]">Category</p>
-                  <p>{selectedVendor.type}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-[#2C2C2C]">Price</p>
-                  <p>{selectedVendor.currency || "SGD"} {selectedVendor.price}</p>
-                </div>
-                <div>
-                  <p className="font-medium text-[#2C2C2C]">Guests</p>
-                  <p>{form.guestCount || "—"}</p>
-                </div>
-              </div>
-              <p className="text-sm text-[#2C2C2C]/70">Booking details are posted to the backend and loaded from the database in history.</p>
-            </div>
-          </div>
         </section>
 
+        {/* Form */}
         <section>
           <form onSubmit={handleSubmit} className="bg-white border border-[#EDE0DF] rounded-sm shadow-sm overflow-hidden">
             <div className="px-8 py-6 border-b border-[#EDE0DF] bg-[#F9EAE8]/80">
-              <h2 className="text-xl text-[#2C2C2C] font-medium">Complete Booking Details</h2>
+              <h2 className="text-xl text-[#2C2C2C] font-medium">Booking Details</h2>
             </div>
             <div className="px-8 py-6 space-y-5">
               {submitError && (
@@ -231,87 +194,84 @@ export default function BookVendorPage() {
                 </div>
               )}
 
-              <div className="grid gap-4">
-                <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70">Event Date</label>
+              <div>
+                <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70 mb-2">Event Date</label>
                 <input
                   type="date"
                   value={form.eventDate}
                   onChange={(e) => handleChange("eventDate", e.target.value)}
                   className="w-full border border-[#EDE0DF] rounded-sm px-4 py-3 text-[#2C2C2C] bg-white focus:border-[#C9A84C] focus:outline-none"
                 />
-                {errors.eventDate && <p className="text-xs text-[#C0392B]">{errors.eventDate}</p>}
+                {errors.eventDate && <p className="text-xs text-[#C0392B] mt-1">{errors.eventDate}</p>}
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70">Event Type</label>
+                  <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70 mb-2">Event Type</label>
                   <select
                     value={form.eventType}
                     onChange={(e) => handleChange("eventType", e.target.value)}
                     className="w-full border border-[#EDE0DF] rounded-sm px-4 py-3 text-[#2C2C2C] bg-white focus:border-[#C9A84C] focus:outline-none"
                   >
-                    <option value="">Select event type</option>
+                    <option value="">Select type</option>
                     {['Wedding', 'Engagement', 'Reception', 'Corporate'].map((type) => (
                       <option key={type} value={type}>{type}</option>
                     ))}
                   </select>
-                  {errors.eventType && <p className="text-xs text-[#C0392B]">{errors.eventType}</p>}
+                  {errors.eventType && <p className="text-xs text-[#C0392B] mt-1">{errors.eventType}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70">Guest Count</label>
+                  <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70 mb-2">Guests</label>
                   <input
-                    type="number"
-                    min="1"
+                    type="number" min="1"
                     value={form.guestCount}
                     onChange={(e) => handleChange("guestCount", e.target.value)}
                     className="w-full border border-[#EDE0DF] rounded-sm px-4 py-3 text-[#2C2C2C] bg-white focus:border-[#C9A84C] focus:outline-none"
                   />
-                  {errors.guestCount && <p className="text-xs text-[#C0392B]">{errors.guestCount}</p>}
+                  {errors.guestCount && <p className="text-xs text-[#C0392B] mt-1">{errors.guestCount}</p>}
                 </div>
               </div>
 
-              <div className="grid gap-4">
-                <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70">Your Name</label>
+              <div>
+                <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70 mb-2">Your Name</label>
                 <input
                   type="text"
                   value={form.clientName}
                   onChange={(e) => handleChange("clientName", e.target.value)}
-                  placeholder="e.g. Sarah Lim"
                   className="w-full border border-[#EDE0DF] rounded-sm px-4 py-3 text-[#2C2C2C] bg-white focus:border-[#C9A84C] focus:outline-none"
                 />
-                {errors.clientName && <p className="text-xs text-[#C0392B]">{errors.clientName}</p>}
+                {errors.clientName && <p className="text-xs text-[#C0392B] mt-1">{errors.clientName}</p>}
               </div>
 
-              <div className="grid gap-4">
-                <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70">Contact Email</label>
+              <div>
+                <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70 mb-2">Contact Email</label>
                 <input
                   type="email"
                   value={form.contactEmail}
                   onChange={(e) => handleChange("contactEmail", e.target.value)}
-                  placeholder="hello@example.com"
                   className="w-full border border-[#EDE0DF] rounded-sm px-4 py-3 text-[#2C2C2C] bg-white focus:border-[#C9A84C] focus:outline-none"
                 />
-                {errors.contactEmail && <p className="text-xs text-[#C0392B]">{errors.contactEmail}</p>}
+                {errors.contactEmail && <p className="text-xs text-[#C0392B] mt-1">{errors.contactEmail}</p>}
               </div>
 
-              <div className="grid gap-4">
-                <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70">Additional Notes</label>
+              <div>
+                <label className="block text-sm font-sans font-medium text-[#2C2C2C]/70 mb-2">Notes</label>
                 <textarea
-                  rows="4"
+                  rows="3"
                   value={form.notes}
                   onChange={(e) => handleChange("notes", e.target.value)}
-                  placeholder="Add event preferences or special instructions"
+                  placeholder="Special requests..."
                   className="w-full border border-[#EDE0DF] rounded-sm px-4 py-3 text-[#2C2C2C] bg-white focus:border-[#C9A84C] focus:outline-none"
                 />
               </div>
 
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !selectedVendor}
                 className="w-full inline-flex items-center justify-center rounded-sm bg-[#C0392B] text-white text-sm font-sans font-medium px-5 py-3 hover:bg-[#E74C3C] transition-all duration-150 shadow-md disabled:opacity-60"
               >
-                {submitting ? "Saving booking…" : "Confirm Booking"}
+                {submitting ? "Saving…" : "Confirm Booking"}
               </button>
             </div>
           </form>

@@ -15,6 +15,7 @@ The platform includes key modules such as **User Management, Vendor Management, 
 ### 🔹 Frontend
 
 * Vite
+* React
 * Tailwind CSS
 * JavaScript
 
@@ -90,6 +91,9 @@ cd frontend
 ```
 ```
 npm install
+```
+```
+npm install axios
 ```
 ```
 npm run dev
@@ -212,7 +216,6 @@ git pull                             # Fetch and merge from remote
 ```
 
 ---
-<<<<<<< HEAD
 
 ## Members EndPoints
 
@@ -224,12 +227,11 @@ Package Management User
 ```
 http://localhost:5173/packages
 ```
-=======
+
 ## Admin Credentials:
 
 Email: admin@everglow.com
 Password: 123
->>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
 
 ---
 
