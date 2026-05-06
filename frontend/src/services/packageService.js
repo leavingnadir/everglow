@@ -52,8 +52,15 @@ export async function deletePackage(id) {
   return handleResponse(res);
 }
 
+<<<<<<< HEAD
 export const TIERS = ["GOLD", "PLATINUM", "SILVER"];
 
+=======
+// ✅ Added DIAMOND to match backend enum
+export const TIERS = ["GOLD", "PLATINUM", "SILVER", "DIAMOND"];
+
+// ✅ Added DRONE_SHOOT to match backend enum
+>>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
 export const VENDOR_CATEGORIES = [
   { value: "VIDEOGRAPHY",         label: "Videography" },
   { value: "FLORA",               label: "Flora" },
@@ -61,10 +68,22 @@ export const VENDOR_CATEGORIES = [
   { value: "PHOTOGRAPHY",         label: "Photography" },
   { value: "SOUNDS_AND_LIGHTING", label: "Sounds & Lighting" },
   { value: "DANCING_TEAM",        label: "Dancing Team" },
+<<<<<<< HEAD
 ];
 
+=======
+  { value: "DRONE_SHOOT",         label: "Drone Shoot" },
+  { value: "BUFFET_CATERING",     label: "Buffet Catering" },
+];
+
+// ✅ Added DIAMOND tier style
+>>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
 export const TIER_STYLES = {
   GOLD:     { bg: "bg-yellow-50", border: "border-yellow-400", badge: "bg-yellow-400 text-yellow-900", icon: "🥇" },
   PLATINUM: { bg: "bg-slate-50",  border: "border-slate-400",  badge: "bg-slate-400 text-slate-900",   icon: "🏆" },
   SILVER:   { bg: "bg-gray-50",   border: "border-gray-400",   badge: "bg-gray-300 text-gray-800",     icon: "🥈" },
+<<<<<<< HEAD
+=======
+  DIAMOND:  { bg: "bg-cyan-50",   border: "border-cyan-400",   badge: "bg-cyan-400 text-cyan-900",     icon: "💎" }, // ✅ added
+>>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
 };

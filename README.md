@@ -212,6 +212,7 @@ git pull                             # Fetch and merge from remote
 ```
 
 ---
+<<<<<<< HEAD
 
 ## Members EndPoints
 
@@ -223,6 +224,12 @@ Package Management User
 ```
 http://localhost:5173/packages
 ```
+=======
+## Admin Credentials:
+
+Email: admin@everglow.com
+Password: 123
+>>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
 
 ---
 

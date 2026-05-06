@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     
+=======
+>>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
@@ -27,6 +30,10 @@
     "globals": "^17.4.0",
     "postcss": "^8.5.8",
     "tailwindcss": "^3.4.19",
+<<<<<<< HEAD
     "vite": "^8.0.10"
+=======
+    "vite": "^8.0.1"
+>>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
   }
 }

@@ -5,7 +5,11 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
+<<<<<<< HEAD
 		<version>3.2.0</version>
+=======
+		<version>3.5.13</version>
+>>>>>>> f5b2fbfde505d405c49893dff97eeff236feb6a9
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.everglow</groupId>
