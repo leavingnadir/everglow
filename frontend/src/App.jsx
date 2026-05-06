@@ -13,6 +13,11 @@ import LoginPage         from "./pages/users/LoginPage"
 import UserProfilePage   from "./pages/users/UserProfilePage"
 import AdminUsersPage    from "./pages/users/AdminUsersPage"
 
+// Vendor Pages
+import VendorsPage from "./pages/vendors/VendorsPage"
+import VendorDetailsPage from "./pages/vendors/VendorDetailsPage"
+import AdminVendorDashboard from "./pages/vendors/AdminVendorDashboard"
+
 // Admin pages
 import AdminPanel          from "./pages/admin/AdminPanel"
 import ProtectedAdminRoute from "./pages/admin/ProtectedAdminRoute"
@@ -125,7 +130,7 @@ function Navbar() {
       <nav className="space-x-7 text-sm font-sans font-medium">
         {[
           { label: "Home",     to: "/",         isLink: true  },
-          { label: "Venues",   to: "#",         isLink: false },
+          { label: "Vendors",  to: "/vendors",  isLink: true },
           { label: "Packages", to: "/packages", isLink: true  },
           { label: "Bookings", to: "#",         isLink: false },
         ].map((item) =>
@@ -203,6 +208,10 @@ function App() {
           {/* Packages — public browse */}
           <Route path="/packages" element={<PackagesPage />} />
 
+          {/* Vendors */}
+          <Route path="/vendors" element={<VendorsPage />} />
+          <Route path="/vendors/:id" element={<VendorDetailsPage />} />
+
           {/* User */}
           <Route path="/user/profile" element={<UserProfilePage />} />
 
@@ -236,6 +245,12 @@ function App() {
                <PaymentList />
              </ProtectedAdminRoute>
            } />
+
+          <Route path="/admin/vendors" element={
+            <ProtectedAdminRoute>
+              <AdminVendorDashboard />
+            </ProtectedAdminRoute>
+          } />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
