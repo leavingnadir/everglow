@@ -11,7 +11,7 @@ const SECTIONS = [
     route: "/admin/users",
   },
   {
-    key: "vendors",                                          // ✅ NEW
+    key: "vendors",
     title: "Vendor Management",
     description: "Manage vendor partners — photographers, caterers, decorators and more.",
     icon: "🏢",
@@ -30,6 +30,13 @@ const SECTIONS = [
     description: "Create and update packages. Control pricing, availability and details.",
     icon: "📦",
     route: "/admin/packages",
+  },
+  {
+  key: "bookings",
+  title: "Booking Management",
+  description: "Review all bookings, change statuses and delete entries.",
+  icon: "📅",
+  route: "/admin/bookings",
   },
 ];
 

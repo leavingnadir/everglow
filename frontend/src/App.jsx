@@ -24,6 +24,7 @@ import AdminVendorDashboard from "./pages/vendors/AdminVendorDashboard"
 // Admin pages
 import AdminPanel          from "./pages/admin/AdminPanel"
 import ProtectedAdminRoute from "./pages/admin/ProtectedAdminRoute"
+import AdminBookings from "./pages/admin/AdminBookings"
 
 // Auth context
 import { AuthProvider, useAuth } from "./context/AuthContext"
@@ -254,12 +255,18 @@ function App() {
              </ProtectedAdminRoute>
           } />
 
-	  <Route path="/admin/vendors" element={
+          <Route path="/admin/bookings" element={
+            <ProtectedAdminRoute>
+              <AdminBookings />
+            </ProtectedAdminRoute>
+          } />
+
+	        <Route path="/admin/vendors" element={
             <ProtectedAdminRoute>
               <AdminVendorDashboard />
             </ProtectedAdminRoute>
           } />
-        </Routes>
+      </Routes>
       </BrowserRouter>
     </AuthProvider>
   )
