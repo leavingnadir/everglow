@@ -1,5 +1,14 @@
 import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom'
 import './App.css'
+<<<<<<< Updated upstream
+=======
+import PaymentList   from "./pages/payments/PaymentList"
+import PaymentForm   from "./pages/payments/PaymentForm"
+import PaymentDetail from "./pages/payments/PaymentDetail"
+import PackagesPage  from "./pages/packages/PackagesPage"
+import AdminPackagesPage from "./pages/packages/Adminpackagespage.jsx";
+import FeedbackPage from "./pages/reviews/FeedbackPage";
+>>>>>>> Stashed changes
 
 // Existing pages
 import PaymentList       from "./pages/payments/PaymentList"
@@ -216,6 +225,7 @@ function App() {
           <Route path="/vendors" element={<VendorsPage />} />
           <Route path="/vendors/:id" element={<VendorDetailsPage />} />
 
+<<<<<<< Updated upstream
           {/* User */}
           <Route path="/user/profile" element={<UserProfilePage />} />
 
@@ -269,6 +279,17 @@ function App() {
       </Routes>
       </BrowserRouter>
     </AuthProvider>
+=======
+            {/* Admin only — not linked in navbar */}
+            <Route path="/payments"          element={<PaymentList />} />
+            <Route path="/payments/create"   element={<PaymentForm />} />
+            <Route path="/payments/:id/edit" element={<PaymentForm />} />
+            <Route path="/payments/:id"      element={<PaymentDetail />} />
+            <Route path="/admin/packages"    element={<AdminPackagesPage />} />
+            <Route path="/reviews" element={<FeedbackPage />} />
+          </Routes>
+    </BrowserRouter>
+>>>>>>> Stashed changes
   )
 }
 
