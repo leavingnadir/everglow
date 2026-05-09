@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const API_BASE = "http://localhost:8081/api";
+const API_BASE = "http://localhost:8081/api/feedbacks";
 
 const CATEGORY_COLORS = {
   Photographer: { bg: "#fdf2e9", accent: "#e67e22", text: "#7d4e00" },
@@ -124,10 +124,10 @@ export default function FeedbackPage() {
   const [sortBy, setSortBy]       = useState("newest");
 
   useEffect(() => {
-    fetch(`${API_BASE}/feedbacks/approved`)
-      .then((r) => { if (!r.ok) throw new Error("Failed to fetch feedbacks"); return r.json(); })
-      .then((data) => { setFeedbacks(data); setLoading(false); })
-      .catch((e) => { setError(e.message); setLoading(false); });
+  fetch(`${API_BASE}/approved`)
+    .then((r) => { if (!r.ok) throw new Error("Failed to fetch feedbacks"); return r.json(); })
+    .then((data) => { setFeedbacks(data); setLoading(false); })
+    .catch((e) => { setError(e.message); setLoading(false); });
   }, []);
 
   const categories = ["All", ...Array.from(new Set(feedbacks.map((f) => f.vendorCategory).filter(Boolean)))];

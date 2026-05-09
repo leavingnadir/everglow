@@ -14,7 +14,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class FeedbackController {
 
-    private final FeedbackService feedbackService = null;
+    private final FeedbackService feedbackService;
 
     // POST /api/feedbacks  →  Submit new feedback
     @PostMapping
