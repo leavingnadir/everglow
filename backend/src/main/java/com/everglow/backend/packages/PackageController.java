@@ -6,75 +6,69 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * REST Controller for Package management.
- *
- * Endpoints:
- *   GET    /api/packages           → list all active packages
- *   GET    /api/packages/{id}      → get one package
- *   GET    /api/packages/tier/{t}  → filter by tier (GOLD/PLATINUM/SILVER)
- *   POST   /api/packages           → create package
- *   PUT    /api/packages/{id}      → update package
- *   DELETE /api/packages/{id}      → soft-delete package
- */
 @RestController
 @RequestMapping("/api/packages")
-@CrossOrigin(origins = "*")  // Vite dev server
+@CrossOrigin(origins = "*")
 public class PackageController {
 
     private final PackageService packageService;
 
     @Autowired
-    public PackageController(PackageService packageService) {
-        this.packageService = packageService;
-    }
-
-    // ── GET all ───────────────────────────────────────────────────────────────
+    public PackageController(PackageService packageService) { this.packageService = packageService; }
 
     @GetMapping
-    public ResponseEntity<List<PackageDTO>> getAllPackages() {
+    public ResponseEntity<List<PackageDTO>> getAll() {
         return ResponseEntity.ok(packageService.getAllPackages());
     }
 
-    // ── GET by ID ─────────────────────────────────────────────────────────────
-
     @GetMapping("/{id}")
-    public ResponseEntity<PackageDTO> getPackageById(@PathVariable Long id) {
+    public ResponseEntity<PackageDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(packageService.getPackageById(id));
     }
 
-    // ── GET by tier ───────────────────────────────────────────────────────────
-
     @GetMapping("/tier/{tier}")
-    public ResponseEntity<List<PackageDTO>> getByTier(
-            @PathVariable Package.Tier tier) {
+    public ResponseEntity<List<PackageDTO>> getByTier(@PathVariable Package.Tier tier) {
         return ResponseEntity.ok(packageService.getPackagesByTier(tier));
     }
 
-    // ── POST create ───────────────────────────────────────────────────────────
+    @GetMapping("/theme/{theme}")
+    public ResponseEntity<List<PackageDTO>> getByTheme(@PathVariable Package.Theme theme) {
+        return ResponseEntity.ok(packageService.getPackagesByTheme(theme));
+    }
+
+    @GetMapping("/featured")
+    public ResponseEntity<List<PackageDTO>> getFeatured() {
+        return ResponseEntity.ok(packageService.getFeaturedPackages());
+    }
+
+    @GetMapping("/availability/{status}")
+    public ResponseEntity<List<PackageDTO>> getByAvailability(@PathVariable Package.Availability status) {
+        return ResponseEntity.ok(packageService.getPackagesByAvailability(status));
+    }
+
+    // 🔥 Price range: GET /api/packages/price-range?min=500000&max=2000000
+    @GetMapping("/price-range")
+    public ResponseEntity<List<PackageDTO>> getByPriceRange(
+            @RequestParam BigDecimal min,
+            @RequestParam BigDecimal max) {
+        return ResponseEntity.ok(packageService.getPackagesByPriceRange(min, max));
+    }
 
     @PostMapping
-    public ResponseEntity<PackageDTO> createPackage(
-            @Valid @RequestBody PackageDTO packageDTO) {
-        PackageDTO created = packageService.createPackage(packageDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<PackageDTO> create(@Valid @RequestBody PackageDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(packageService.createPackage(dto));
     }
-
-    // ── PUT update ────────────────────────────────────────────────────────────
 
     @PutMapping("/{id}")
-    public ResponseEntity<PackageDTO> updatePackage(
-            @PathVariable Long id,
-            @Valid @RequestBody PackageDTO packageDTO) {
-        return ResponseEntity.ok(packageService.updatePackage(id, packageDTO));
+    public ResponseEntity<PackageDTO> update(@PathVariable Long id, @Valid @RequestBody PackageDTO dto) {
+        return ResponseEntity.ok(packageService.updatePackage(id, dto));
     }
 
-    // ── DELETE (soft) ─────────────────────────────────────────────────────────
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePackage(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         packageService.deletePackage(id);
         return ResponseEntity.noContent().build();
     }
