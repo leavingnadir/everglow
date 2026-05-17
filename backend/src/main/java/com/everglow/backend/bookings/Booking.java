@@ -28,7 +28,6 @@ public class Booking {
         CANCELLED
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
 
     public Long getUserId() { return userId; }

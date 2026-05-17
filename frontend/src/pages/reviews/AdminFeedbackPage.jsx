@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   getAllFeedbacks,
   deleteFeedback,
-  approveFeedback
+  approveFeedback,
 } from "../../api/feedbackApi";
 
 export default function AdminFeedbackPage() {
@@ -27,134 +27,167 @@ export default function AdminFeedbackPage() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#F7F7F8",
-      padding: "50px 20px",
-      fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto"
-    }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        background:
+          "linear-gradient(180deg, #f8f9fb 0%, #eef1f5 100%)",
+        fontFamily:
+          "Inter, system-ui, -apple-system, sans-serif",
+        padding: "50px 20px",
+        color: "#1f2937",
+      }}
+    >
+      {/* HEADER */}
+      <div
+        style={{
+          maxWidth: 1100,
+          margin: "0 auto 40px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 12,
+            letterSpacing: 3,
+            textTransform: "uppercase",
+            color: "#6b7280",
+            marginBottom: 10,
+          }}
+        >
+          EverGlow Admin
+        </div>
 
-      {/* Header */}
-      <div style={{
-        maxWidth: "900px",
-        margin: "0 auto 30px auto",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "end"
-      }}>
-        <div>
-          <h1 style={{
+        <h1
+          style={{
+            fontSize: "40px",
             margin: 0,
-            fontSize: "26px",
-            fontWeight: 600,
-            letterSpacing: "-0.5px",
-            color: "#111827"
-          }}>
-            Feedback
-          </h1>
-          <p style={{
-            margin: "6px 0 0",
-            fontSize: "13px",
-            color: "#6B7280"
-          }}>
-            Manage and review user submissions
-          </p>
-        </div>
+            fontWeight: 700,
+          }}
+        >
+          Feedback Management
+        </h1>
 
-        <div style={{
-          fontSize: "11px",
-          padding: "6px 12px",
-          borderRadius: "999px",
-          border: "1px solid #E5E7EB",
-          color: "#374151",
-          background: "#fff"
-        }}>
-          Admin Panel
-        </div>
+        <p
+          style={{
+            marginTop: 10,
+            color: "#6b7280",
+            maxWidth: 600,
+            lineHeight: 1.6,
+          }}
+        >
+          Review and manage customer feedback with a clean approval workflow.
+        </p>
       </div>
 
-      {/* Cards */}
-      <div style={{
-        maxWidth: "900px",
-        margin: "0 auto",
-        display: "grid",
-        gap: "14px"
-      }}>
+      {/* GRID */}
+      <div
+        style={{
+          maxWidth: 1100,
+          margin: "0 auto",
+          display: "grid",
+          gap: 16,
+        }}
+      >
         {data.map((f) => (
           <div
             key={f.id}
             style={{
               background: "#fff",
-              border: "1px solid #E5E7EB",
-              borderRadius: "14px",
-              padding: "18px 20px",
-              transition: "all 0.2s ease",
+              border: "1px solid #e5e7eb",
+              borderRadius: 18,
+              padding: 22,
+              boxShadow:
+                "0 6px 18px rgba(15, 23, 42, 0.05)",
+              transition: "0.2s ease",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "#D1D5DB";
-              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.transform =
+                "translateY(-3px)";
+              e.currentTarget.style.boxShadow =
+                "0 10px 25px rgba(15, 23, 42, 0.08)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#E5E7EB";
-              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.transform =
+                "translateY(0px)";
+              e.currentTarget.style.boxShadow =
+                "0 6px 18px rgba(15, 23, 42, 0.05)";
             }}
           >
+            {/* TOP */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 14,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "#9ca3af",
+                  letterSpacing: 1.5,
+                }}
+              >
+                FEEDBACK #{f.id}
+              </div>
 
-            {/* Top row */}
-            <div style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "10px"
-            }}>
-              <span style={{
-                fontSize: "11px",
-                letterSpacing: "0.5px",
-                textTransform: "uppercase",
-                color: f.approved ? "#065F46" : "#92400E",
-                background: f.approved ? "#ECFDF5" : "#FFFBEB",
-                padding: "4px 10px",
-                borderRadius: "999px",
-                border: "1px solid #E5E7EB"
-              }}>
-                {f.approved ? "Approved" : "Pending"}
-              </span>
-
-              <span style={{
-                fontSize: "11px",
-                color: "#9CA3AF"
-              }}>
-                #{f.id}
+              <span
+                style={{
+                  fontSize: 12,
+                  padding: "6px 10px",
+                  borderRadius: 999,
+                  background: f.approved
+                    ? "#ecfdf5"
+                    : "#fff7ed",
+                  color: f.approved
+                    ? "#059669"
+                    : "#d97706",
+                  border: "1px solid #e5e7eb",
+                  fontWeight: 600,
+                }}
+              >
+                {f.approved
+                  ? "Approved"
+                  : "Pending"}
               </span>
             </div>
 
-            {/* Comment */}
-            <p style={{
-              margin: 0,
-              fontSize: "14px",
-              lineHeight: "1.6",
-              color: "#111827"
-            }}>
-              {f.comment}
+            {/* COMMENT */}
+            <p
+              style={{
+                fontSize: 15,
+                color: "#374151",
+                lineHeight: 1.7,
+                marginBottom: 18,
+              }}
+            >
+              “{f.comment}”
             </p>
 
-            {/* Actions */}
-            <div style={{
-              display: "flex",
-              gap: "10px",
-              marginTop: "14px"
-            }}>
-
+            {/* ACTIONS */}
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                flexWrap: "wrap",
+              }}
+            >
               {!f.approved && (
                 <button
-                  onClick={() => handleApprove(f.id)}
+                  onClick={() =>
+                    handleApprove(f.id)
+                  }
                   style={{
-                    fontSize: "12px",
-                    padding: "7px 12px",
-                    borderRadius: "10px",
-                    border: "1px solid #E5E7EB",
-                    background: "#111827",
+                    background: "#2563eb",
                     color: "#fff",
-                    cursor: "pointer"
+                    border: "none",
+                    padding:
+                      "10px 14px",
+                    borderRadius: 10,
+                    cursor: "pointer",
+                    fontSize: 13,
+                    fontWeight: 600,
                   }}
                 >
                   Approve
@@ -162,21 +195,24 @@ export default function AdminFeedbackPage() {
               )}
 
               <button
-                onClick={() => handleDelete(f.id)}
+                onClick={() =>
+                  handleDelete(f.id)
+                }
                 style={{
-                  fontSize: "12px",
-                  padding: "7px 12px",
-                  borderRadius: "10px",
-                  border: "1px solid #E5E7EB",
-                  background: "#fff",
+                  background: "#f3f4f6",
                   color: "#111827",
-                  cursor: "pointer"
+                  border: "1px solid #e5e7eb",
+                  padding:
+                    "10px 14px",
+                  borderRadius: 10,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 600,
                 }}
               >
                 Delete
               </button>
             </div>
-
           </div>
         ))}
       </div>
