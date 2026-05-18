@@ -25,7 +25,7 @@ public class BookingService {
         return repository.findByUserId(userId);
     }
 
-    /** ✅ NEW — Update status */
+  
     public Optional<Booking> updateStatus(Long id, Booking.BookingStatus newStatus) {
         return repository.findById(id).map(booking -> {
             booking.setStatus(newStatus);
