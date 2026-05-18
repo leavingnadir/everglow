@@ -22,7 +22,7 @@ const SECTIONS = [
     title: "Payment Management",
     description: "Track transactions, refunds and revenue. Review payment history by user.",
     icon: "💳",
-    route: "/payments",
+    route: "/admin/payments",
   },
   {
     key: "packages",

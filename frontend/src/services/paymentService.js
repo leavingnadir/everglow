@@ -1,47 +1,30 @@
-// src/services/paymentService.js
-// Connects Spring Boot backend
+import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8081/api";
+const API_URL = `${import.meta.env.VITE_API_URL}/payments`;
 
 const paymentService = {
   getAllPayments: async () => {
-    const res = await fetch(`${BASE_URL}/payments`);
-    if (!res.ok) throw new Error("Failed to fetch payments");
-    return res.json();
+    const res = await axios.get(API_URL);
+    return res.data;
   },
 
   getPaymentById: async (id) => {
-    const res = await fetch(`${BASE_URL}/payments/${id}`);
-    if (!res.ok) throw new Error("Failed to fetch payment");
-    return res.json();
+    const res = await axios.get(`${API_URL}/${id}`);
+    return res.data;
   },
 
   createPayment: async (data) => {
-    const res = await fetch(`${BASE_URL}/payments`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) throw new Error("Failed to create payment");
-    return res.json();
+    const res = await axios.post(API_URL, data);
+    return res.data;
   },
 
   updatePayment: async (id, data) => {
-    const res = await fetch(`${BASE_URL}/payments/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) throw new Error("Failed to update payment");
-    return res.json();
+    const res = await axios.put(`${API_URL}/${id}`, data);
+    return res.data;
   },
 
   deletePayment: async (id) => {
-    const res = await fetch(`${BASE_URL}/payments/${id}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) throw new Error("Failed to delete payment");
-    return true;
+    await axios.delete(`${API_URL}/${id}`);
   },
 };
 

@@ -235,7 +235,7 @@ http://localhost:5173/admin/feedback
 
 ## Admin Credentials:
 
-Email: admin@everglow.com
+Email: admin@everglow.com  
 Password: 123
 
 ---
