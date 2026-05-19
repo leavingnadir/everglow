@@ -1,7 +1,6 @@
-// src/services/bookingService.js
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/bookings`;
+const API_URL = `${import.meta.env.VITE_API_URL}/bookings`;
 
 export const fetchBookings = async () => {
   const res = await axios.get(API_URL);

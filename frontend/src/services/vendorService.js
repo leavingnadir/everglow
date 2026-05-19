@@ -1,53 +1,31 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = `${import.meta.env.VITE_API_URL}/api/vendors`;
+const API_URL = `${import.meta.env.VITE_API_URL}/vendors`;
 
-export const fetchVendors = async (category = '') => {
-  try {
-    const url = category ? `${API_URL}?category=${encodeURIComponent(category)}` : API_URL;
-    const response = await axios.get(url);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching vendors:", error);
-    throw error;
-  }
+export const fetchVendors = async (category = "") => {
+  const url = category
+    ? `${API_URL}?category=${encodeURIComponent(category)}`
+    : API_URL;
+
+  const res = await axios.get(url);
+  return res.data;
 };
 
 export const fetchVendorById = async (id) => {
-  try {
-    const response = await axios.get(`${API_URL}/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching vendor with id ${id}:`, error);
-    throw error;
-  }
+  const res = await axios.get(`${API_URL}/${id}`);
+  return res.data;
 };
 
-export const createVendor = async (vendorData) => {
-  try {
-    const response = await axios.post(API_URL, vendorData);
-    return response.data;
-  } catch (error) {
-    console.error("Error creating vendor:", error);
-    throw error;
-  }
+export const createVendor = async (data) => {
+  const res = await axios.post(API_URL, data);
+  return res.data;
 };
 
-export const updateVendor = async (id, vendorData) => {
-  try {
-    const response = await axios.put(`${API_URL}/${id}`, vendorData);
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating vendor with id ${id}:`, error);
-    throw error;
-  }
+export const updateVendor = async (id, data) => {
+  const res = await axios.put(`${API_URL}/${id}`, data);
+  return res.data;
 };
 
 export const deleteVendor = async (id) => {
-  try {
-    await axios.delete(`${API_URL}/${id}`);
-  } catch (error) {
-    console.error(`Error deleting vendor with id ${id}:`, error);
-    throw error;
-  }
+  await axios.delete(`${API_URL}/${id}`);
 };

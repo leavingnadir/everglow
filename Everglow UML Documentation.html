@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Everglow – Complete UML Documentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:        #0f0e0d;
+    --surface:   #181714;
+    --border:    #2e2b27;
+    --accent:    #c9854a;
+    --accent2:   #7c6fcd;
+    --text:      #e8e4de;
+    --muted:     #7a7368;
+    --mono:      'JetBrains Mono', monospace;
+    --sans:      'DM Sans', sans-serif;
+
+    /* entity colours */
+    --col-user:     #7c6fcd;
+    --col-vendor:   #c0604a;
+    --col-booking:  #3a6fa8;
+    --col-payment:  #3d8b5e;
+    --col-package:  #b0527a;
+    --col-feedback: #b07a20;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 56px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-brand {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .topbar-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Tab nav ── */
+  .tab-nav {
+    display: flex;
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 14px 22px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px; height: 18px;
+    border-radius: 3px;
+    background: var(--border);
+    font-size: 9px;
+    margin-right: 8px;
+    color: var(--muted);
+  }
+  .tab-btn.active .tab-num {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* ── Panels ── */
+  .panel { display: none; padding: 40px; }
+  .panel.active { display: block; }
+
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .panel-heading {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .panel-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  /* ── SVG wrapper ── */
+  .diagram-wrap {
+    background: #1c1a17;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px;
+    overflow-x: auto;
+  }
+  .diagram-wrap svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* ── Issues list (for diagram 4) ── */
+  .issues-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .issue-card {
+    background: #1c1a17;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 20px;
+  }
+  .issue-card-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 6px;
+    letter-spacing: 0.06em;
+  }
+  .issue-card p {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin-right: 4px;
+    margin-bottom: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .tag-red   { background: rgba(192,96,74,0.18); color: #e07060; border: 1px solid rgba(192,96,74,0.3); }
+  .tag-amber { background: rgba(176,122,32,0.18); color: #d4a844; border: 1px solid rgba(176,122,32,0.3); }
+  .tag-blue  { background: rgba(58,111,168,0.18); color: #6a9fd8; border: 1px solid rgba(58,111,168,0.3); }
+
+  /* ── SVG text base ── */
+  text { font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<!-- ── Top bar ── -->
+<div class="topbar">
+  <span class="topbar-brand">Everglow · UML Documentation</span>
+  <span class="topbar-sub">Backend Architecture · v1.0</span>
+</div>
+
+<!-- ── Tabs ── -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="show(0)"><span class="tab-num">1</span>Class Diagram</button>
+  <button class="tab-btn"        onclick="show(1)"><span class="tab-num">2</span>Sequence Diagrams</button>
+  <button class="tab-btn"        onclick="show(2)"><span class="tab-num">3</span>ER Diagram</button>
+  <button class="tab-btn"        onclick="show(3)"><span class="tab-num">4</span>Component Diagram</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 1 · CLASS DIAGRAM  (fixed from original)
+══════════════════════════════════════════════════════════════ -->
+<div class="panel active" id="p0">
+  <div class="panel-title">Diagram 01</div>
+  <div class="panel-heading">Class Diagram</div>
+  <div class="panel-desc">All six backend entities with fields, types, visibility modifiers and relationships. Fixed from original: added <code>packageId</code> FK on Booking, corrected Booking→Feedback multiplicity to 1..*, added meaningful methods, and linked Package to Booking.</div>
+
+  <div class="diagram-wrap">
+  <svg viewBox="0 0 1040 980" xmlns="http://www.w3.org/2000/svg" style="min-width:900px">
+    <defs>
+      <marker id="c-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M1 1.5L8.5 5L1 8.5" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+      <marker id="c-arr-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M1 1.5L8.5 5L1 8.5" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <!-- USER -->
+    <rect x="30" y="30" width="210" height="24" fill="#7c6fcd"/>
+    <text x="135" y="44" text-anchor="middle" fill="#d0c8f8" font-size="8">«entity»</text>
+    <text x="135" y="44" text-anchor="middle" fill="#fff" font-size="8" dy="8" font-weight="700">User</text>
+    <rect x="30" y="54" width="210" height="178" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="38" y="70"  fill="#a89de0" font-size="10.5">- id : Long</text>
+    <text x="38" y="86"  fill="#a89de0" font-size="10.5">- name : String</text>
+    <text x="38" y="102" fill="#a89de0" font-size="10.5">- email : String</text>
+    <text x="38" y="118" fill="#a89de0" font-size="10.5">- password : String</text>
+    <text x="38" y="134" fill="#a89de0" font-size="10.5">- role : Role  {USER|ADMIN}</text>
+    <text x="38" y="150" fill="#a89de0" font-size="10.5">- phoneNumber : String</text>
+    <text x="38" y="166" fill="#a89de0" font-size="10.5">- active : boolean</text>
+    <text x="38" y="182" fill="#a89de0" font-size="10.5">- createdAt : LocalDateTime</text>
+    <text x="38" y="198" fill="#a89de0" font-size="10.5">- updatedAt : LocalDateTime</text>
+    <line x1="30" y1="210" x2="240" y2="210" stroke="#3a3630" stroke-width="0.8"/>
+    <rect x="30" y="210" width="210" height="44" fill="#222018" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="38" y="224" fill="#7a7a9a" font-size="10" font-style="italic">+ getBookings() : List&lt;Booking&gt;</text>
+    <text x="38" y="238" fill="#7a7a9a" font-size="10" font-style="italic">+ getFeedbacks() : List&lt;Feedback&gt;</text>
+
+    <!-- VENDOR -->
+    <rect x="800" y="30" width="210" height="24" fill="#c0604a"/>
+    <text x="905" y="44" text-anchor="middle" fill="#f0c0b4" font-size="8">«entity»</text>
+    <text x="905" y="44" text-anchor="middle" fill="#fff" font-size="8" dy="8" font-weight="700">Vendor</text>
+    <rect x="800" y="54" width="210" height="194" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="808" y="70"  fill="#d4907a" font-size="10.5">- id : Long</text>
+    <text x="808" y="86"  fill="#d4907a" font-size="10.5">- businessName : String</text>
+    <text x="808" y="102" fill="#d4907a" font-size="10.5">- category : VendorCategory</text>
+    <text x="808" y="118" fill="#d4907a" font-size="10.5">- description : String</text>
+    <text x="808" y="134" fill="#d4907a" font-size="10.5">- contactEmail : String</text>
+    <text x="808" y="150" fill="#d4907a" font-size="10.5">- contactPhone : String</text>
+    <text x="808" y="166" fill="#d4907a" font-size="10.5">- priceRange : String</text>
+    <text x="808" y="182" fill="#d4907a" font-size="10.5">- rating : Double</text>
+    <text x="808" y="198" fill="#d4907a" font-size="10.5">- imageUrl : String</text>
+    <text x="808" y="214" fill="#d4907a" font-size="10.5">- createdAt : LocalDateTime</text>
+    <text x="808" y="230" fill="#d4907a" font-size="10.5">- updatedAt : LocalDateTime</text>
+    <line x1="800" y1="244" x2="1010" y2="244" stroke="#3a3630" stroke-width="0.8"/>
+    <rect x="800" y="244" width="210" height="44" fill="#222018" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="808" y="258" fill="#7a7a9a" font-size="10" font-style="italic">+ getBookings() : List&lt;Booking&gt;</text>
+    <text x="808" y="272" fill="#7a7a9a" font-size="10" font-style="italic">+ getFeedbacks() : List&lt;Feedback&gt;</text>
+
+    <!-- BOOKING  (centre, y=380) -->
+    <rect x="415" y="380" width="210" height="24" fill="#3a6fa8"/>
+    <text x="520" y="394" text-anchor="middle" fill="#aaccee" font-size="8">«entity»</text>
+    <text x="520" y="394" text-anchor="middle" fill="#fff" font-size="8" dy="8" font-weight="700">Booking</text>
+    <rect x="415" y="404" width="210" height="162" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="423" y="420" fill="#7aaad4" font-size="10.5">- id : Long</text>
+    <text x="423" y="436" fill="#7aaad4" font-size="10.5">- userId : Long  «FK»</text>
+    <text x="423" y="452" fill="#7aaad4" font-size="10.5">- vendorId : Long  «FK»</text>
+    <text x="423" y="468" fill="#7aaad4" font-size="10.5">- packageId : Long  «FK»</text>
+    <text x="423" y="484" fill="#7aaad4" font-size="10.5">- eventDate : LocalDate</text>
+    <text x="423" y="500" fill="#7aaad4" font-size="10.5">- amount : BigDecimal</text>
+    <text x="423" y="516" fill="#7aaad4" font-size="10.5">- status : BookingStatus</text>
+    <text x="423" y="532" fill="#7aaad4" font-size="10.5">- createdAt : LocalDateTime</text>
+    <line x1="415" y1="548" x2="625" y2="548" stroke="#3a3630" stroke-width="0.8"/>
+    <rect x="415" y="548" width="210" height="44" fill="#222018" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="423" y="562" fill="#7a7a9a" font-size="10" font-style="italic">+ getPayment() : Payment</text>
+    <text x="423" y="576" fill="#7a7a9a" font-size="10" font-style="italic">+ getFeedbacks() : List&lt;Feedback&gt;</text>
+
+    <!-- PAYMENT -->
+    <rect x="800" y="660" width="210" height="24" fill="#3d8b5e"/>
+    <text x="905" y="674" text-anchor="middle" fill="#a0d8b8" font-size="8">«entity»</text>
+    <text x="905" y="674" text-anchor="middle" fill="#fff" font-size="8" dy="8" font-weight="700">Payment</text>
+    <rect x="800" y="684" width="210" height="178" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="808" y="700"  fill="#70c090" font-size="10.5">- id : Long</text>
+    <text x="808" y="716"  fill="#70c090" font-size="10.5">- bookingId : Long  «FK»</text>
+    <text x="808" y="732"  fill="#70c090" font-size="10.5">- userId : Long  «FK»</text>
+    <text x="808" y="748"  fill="#70c090" font-size="10.5">- amount : BigDecimal</text>
+    <text x="808" y="764"  fill="#70c090" font-size="10.5">- paymentMethod : PaymentMethod</text>
+    <text x="808" y="780"  fill="#70c090" font-size="10.5">- status : PaymentStatus</text>
+    <text x="808" y="796"  fill="#70c090" font-size="10.5">- paymentDate : LocalDate</text>
+    <text x="808" y="812"  fill="#70c090" font-size="10.5">- notes : String</text>
+    <text x="808" y="828"  fill="#70c090" font-size="10.5">- createdAt : LocalDateTime</text>
+    <text x="808" y="844"  fill="#70c090" font-size="10.5">- updatedAt : LocalDateTime</text>
+    <line x1="800" y1="858" x2="1010" y2="858" stroke="#3a3630" stroke-width="0.8"/>
+    <rect x="800" y="858" width="210" height="28" fill="#222018" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="808" y="875" fill="#7a7a9a" font-size="10" font-style="italic">+ getBooking() : Booking</text>
+
+    <!-- PACKAGE -->
+    <rect x="30" y="660" width="210" height="24" fill="#b0527a"/>
+    <text x="135" y="674" text-anchor="middle" fill="#f0b8cc" font-size="8">«entity»</text>
+    <text x="135" y="674" text-anchor="middle" fill="#fff" font-size="8" dy="8" font-weight="700">Package</text>
+    <rect x="30" y="684" width="210" height="162" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="38" y="700" fill="#d080a8" font-size="10.5">- id : Long</text>
+    <text x="38" y="716" fill="#d080a8" font-size="10.5">- name : String</text>
+    <text x="38" y="732" fill="#d080a8" font-size="10.5">- tier : Tier  {BASIC|PREMIUM|LUXURY}</text>
+    <text x="38" y="748" fill="#d080a8" font-size="10.5">- description : String</text>
+    <text x="38" y="764" fill="#d080a8" font-size="10.5">- price : BigDecimal</text>
+    <text x="38" y="780" fill="#d080a8" font-size="10.5">- includedVendors : List&lt;VendorCategory&gt;</text>
+    <text x="38" y="796" fill="#d080a8" font-size="10.5">- active : boolean</text>
+    <text x="38" y="812" fill="#d080a8" font-size="10.5">- createdAt : LocalDateTime</text>
+    <text x="38" y="828" fill="#d080a8" font-size="10.5">- updatedAt : LocalDateTime</text>
+    <line x1="30" y1="842" x2="240" y2="842" stroke="#3a3630" stroke-width="0.8"/>
+    <rect x="30" y="842" width="210" height="28" fill="#222018" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="38" y="858" fill="#7a7a9a" font-size="10" font-style="italic">+ getBookings() : List&lt;Booking&gt;</text>
+
+    <!-- FEEDBACK -->
+    <rect x="415" y="680" width="210" height="24" fill="#b07a20"/>
+    <text x="520" y="694" text-anchor="middle" fill="#f0d890" font-size="8">«entity»</text>
+    <text x="520" y="694" text-anchor="middle" fill="#fff" font-size="8" dy="8" font-weight="700">Feedback</text>
+    <rect x="415" y="704" width="210" height="194" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="423" y="720" fill="#d4a844" font-size="10.5">- id : Long</text>
+    <text x="423" y="736" fill="#d4a844" font-size="10.5">- userId : Long  «FK»</text>
+    <text x="423" y="752" fill="#d4a844" font-size="10.5">- vendorId : Long  «FK»</text>
+    <text x="423" y="768" fill="#d4a844" font-size="10.5">- bookingId : Long  «FK»</text>
+    <text x="423" y="784" fill="#d4a844" font-size="10.5">- rating : Integer  {1..5}</text>
+    <text x="423" y="800" fill="#d4a844" font-size="10.5">- comment : String</text>
+    <text x="423" y="816" fill="#d4a844" font-size="10.5">- reviewerName : String</text>
+    <text x="423" y="832" fill="#d4a844" font-size="10.5">- vendorCategory : String</text>
+    <text x="423" y="848" fill="#d4a844" font-size="10.5">- approved : Boolean</text>
+    <text x="423" y="864" fill="#d4a844" font-size="10.5">- createdAt : LocalDateTime</text>
+    <text x="423" y="880" fill="#d4a844" font-size="10.5">- updatedAt : LocalDateTime</text>
+    <line x1="415" y1="894" x2="625" y2="894" stroke="#3a3630" stroke-width="0.8"/>
+    <rect x="415" y="894" width="210" height="28" fill="#222018" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="423" y="910" fill="#7a7a9a" font-size="10" font-style="italic">+ getBooking() : Booking</text>
+
+    <!-- ── RELATIONSHIPS ── -->
+
+    <!-- User 1 ──* Booking -->
+    <path d="M135 254 L135 330 L460 330 L460 380" fill="none" stroke="#888" stroke-width="1.1" marker-end="url(#c-arr)"/>
+    <text x="139" y="268" fill="#ccc" font-size="11" font-weight="700">1</text>
+    <text x="464" y="378" fill="#ccc" font-size="11" font-weight="700">*</text>
+    <text x="260" y="325" fill="#666" font-size="9.5">makes</text>
+
+    <!-- Vendor 1 ──* Booking -->
+    <path d="M905 288 L905 330 L580 330 L580 380" fill="none" stroke="#888" stroke-width="1.1" marker-end="url(#c-arr)"/>
+    <text x="909" y="304" fill="#ccc" font-size="11" font-weight="700">1</text>
+    <text x="584" y="378" fill="#ccc" font-size="11" font-weight="700">*</text>
+    <text x="680" y="325" fill="#666" font-size="9.5">assigned to</text>
+
+    <!-- Package 1 ──* Booking  (new) -->
+    <path d="M240 762 L340 762 L340 470 L415 470" fill="none" stroke="#888" stroke-width="1.1" stroke-dasharray="6 3" marker-end="url(#c-arr-d)"/>
+    <text x="224" y="760" fill="#ccc" font-size="11" font-weight="700">1</text>
+    <text x="411" y="468" fill="#ccc" font-size="11" font-weight="700">*</text>
+    <text x="280" y="757" fill="#555" font-size="9.5">selected for</text>
+
+    <!-- Booking 1 ──1 Payment -->
+    <path d="M625 490 L720 490 L720 672 L800 672" fill="none" stroke="#888" stroke-width="1.1" marker-end="url(#c-arr)"/>
+    <text x="629" y="488" fill="#ccc" font-size="11" font-weight="700">1</text>
+    <text x="784" y="670" fill="#ccc" font-size="11" font-weight="700">1</text>
+    <text x="726" y="585" fill="#666" font-size="9.5">triggers</text>
+
+    <!-- Booking 1 ──* Feedback  (FIXED: was 1..1) -->
+    <path d="M520 592 L520 680" fill="none" stroke="#888" stroke-width="1.1" marker-end="url(#c-arr)"/>
+    <text x="524" y="606" fill="#ccc" font-size="11" font-weight="700">1</text>
+    <text x="524" y="678" fill="#ccc" font-size="11" font-weight="700">*</text>
+    <text x="530" y="640" fill="#666" font-size="9.5">reviewed via</text>
+
+    <!-- User 1 ──* Feedback (left spine) -->
+    <path d="M30 142 L12 142 L12 910 L415 910" fill="none" stroke="#888" stroke-width="1.1" marker-end="url(#c-arr)"/>
+    <text x="32" y="140" fill="#ccc" font-size="11" font-weight="700">1</text>
+    <text x="400" y="908" fill="#ccc" font-size="11" font-weight="700">*</text>
+    <text x="14" y="535" fill="#555" font-size="9" transform="rotate(-90,14,535)">writes</text>
+
+    <!-- Vendor 1 ──* Feedback (right spine) -->
+    <path d="M1010 142 L1028 142 L1028 910 L625 910" fill="none" stroke="#888" stroke-width="1.1" marker-end="url(#c-arr)"/>
+    <text x="1000" y="140" fill="#ccc" font-size="11" font-weight="700">1</text>
+    <text x="627" y="908" fill="#ccc" font-size="11" font-weight="700">*</text>
+    <text x="1014" y="535" fill="#555" font-size="9" transform="rotate(90,1014,535)">rated in</text>
+
+    <!-- Package *──1 Vendor (dashed) -->
+    <path d="M240 700 L380 700 L380 157 L800 157" fill="none" stroke="#555" stroke-width="1.1" stroke-dasharray="6 3" marker-end="url(#c-arr-d)"/>
+    <text x="224" y="698" fill="#888" font-size="11" font-weight="700">*</text>
+    <text x="784" y="155" fill="#888" font-size="11" font-weight="700">1</text>
+    <text x="480" y="695" fill="#444" font-size="9.5">includes vendors</text>
+
+    <!-- Legend -->
+    <rect x="30" y="940" width="980" height="30" fill="#222018" stroke="#3a3630" stroke-width="0.8" rx="4"/>
+    <text x="42" y="958" fill="#888" font-size="10" font-weight="700">LEGEND:</text>
+    <line x1="108" y1="954" x2="148" y2="954" stroke="#888" stroke-width="1.2" marker-end="url(#c-arr)"/>
+    <text x="154" y="958" fill="#666" font-size="9.5">Association</text>
+    <line x1="248" y1="954" x2="288" y2="954" stroke="#555" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#c-arr-d)"/>
+    <text x="294" y="958" fill="#666" font-size="9.5">Dependency</text>
+    <text x="390" y="958" fill="#ccc" font-size="10" font-weight="700" font-style="italic">1</text>
+    <text x="400" y="958" fill="#666" font-size="9.5">= one</text>
+    <text x="460" y="958" fill="#ccc" font-size="10" font-weight="700" font-style="italic">*</text>
+    <text x="470" y="958" fill="#666" font-size="9.5">= many</text>
+    <text x="540" y="958" fill="#888" font-size="9.5">«FK»</text>
+    <text x="576" y="958" fill="#666" font-size="9.5">= Foreign Key</text>
+    <text x="680" y="958" fill="#ccc" font-size="10" font-style="italic">-</text>
+    <text x="690" y="958" fill="#666" font-size="9.5">private</text>
+    <text x="750" y="958" fill="#ccc" font-size="10" font-style="italic">+</text>
+    <text x="760" y="958" fill="#666" font-size="9.5">public</text>
+  </svg>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 2 · SEQUENCE DIAGRAMS
+══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="p1">
+  <div class="panel-title">Diagram 02</div>
+  <div class="panel-heading">Sequence Diagrams</div>
+  <div class="panel-desc">Five interaction flows showing the message exchange between actors and system components across time.</div>
+
+  <!-- SUB-TABS -->
+  <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;">
+    <button class="seq-btn active" onclick="showSeq(0)" style="font-family:var(--mono);font-size:10.5px;padding:7px 14px;background:#2a2720;border:1px solid var(--border);color:var(--accent);border-radius:4px;cursor:pointer;letter-spacing:0.06em">Login / Register</button>
+    <button class="seq-btn" onclick="showSeq(1)" style="font-family:var(--mono);font-size:10.5px;padding:7px 14px;background:#2a2720;border:1px solid var(--border);color:var(--muted);border-radius:4px;cursor:pointer;letter-spacing:0.06em">Make a Booking</button>
+    <button class="seq-btn" onclick="showSeq(2)" style="font-family:var(--mono);font-size:10.5px;padding:7px 14px;background:#2a2720;border:1px solid var(--border);color:var(--muted);border-radius:4px;cursor:pointer;letter-spacing:0.06em">Process Payment</button>
+    <button class="seq-btn" onclick="showSeq(3)" style="font-family:var(--mono);font-size:10.5px;padding:7px 14px;background:#2a2720;border:1px solid var(--border);color:var(--muted);border-radius:4px;cursor:pointer;letter-spacing:0.06em">Submit Feedback</button>
+    <button class="seq-btn" onclick="showSeq(4)" style="font-family:var(--mono);font-size:10.5px;padding:7px 14px;background:#2a2720;border:1px solid var(--border);color:var(--muted);border-radius:4px;cursor:pointer;letter-spacing:0.06em">Admin: Packages</button>
+  </div>
+
+  <!-- SEQ 0: Login/Register -->
+  <div class="seq-panel diagram-wrap active" id="sq0">
+  <svg viewBox="0 0 760 500" xmlns="http://www.w3.org/2000/svg" style="min-width:680px">
+    <defs>
+      <marker id="s-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <polygon points="0,0 9,5 0,10" fill="#888"/>
+      </marker>
+      <marker id="s-arr-r" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <polygon points="9,0 0,5 9,10" fill="#555"/>
+      </marker>
+    </defs>
+    <!-- lifeline headers -->
+    <rect x="40"  y="20" width="110" height="30" rx="4" fill="#2a2720" stroke="#7c6fcd" stroke-width="1"/>
+    <text x="95"  y="39" text-anchor="middle" fill="#a89de0" font-size="11" font-weight="600">User/Browser</text>
+    <rect x="220" y="20" width="110" height="30" rx="4" fill="#2a2720" stroke="#3a6fa8" stroke-width="1"/>
+    <text x="275" y="39" text-anchor="middle" fill="#7aaad4" font-size="11" font-weight="600">AuthController</text>
+    <rect x="400" y="20" width="110" height="30" rx="4" fill="#2a2720" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="455" y="39" text-anchor="middle" fill="#70c090" font-size="11" font-weight="600">UserService</text>
+    <rect x="580" y="20" width="110" height="30" rx="4" fill="#2a2720" stroke="#b07a20" stroke-width="1"/>
+    <text x="635" y="39" text-anchor="middle" fill="#d4a844" font-size="11" font-weight="600">Database</text>
+
+    <!-- lifelines -->
+    <line x1="95"  y1="50" x2="95"  y2="490" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="275" y1="50" x2="275" y2="490" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="455" y1="50" x2="455" y2="490" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="635" y1="50" x2="635" y2="490" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+
+    <!-- activation bars -->
+    <rect x="90"  y="90"  width="10" height="120" fill="#7c6fcd" opacity="0.5" rx="2"/>
+    <rect x="270" y="100" width="10" height="100" fill="#3a6fa8" opacity="0.5" rx="2"/>
+    <rect x="450" y="110" width="10" height="80"  fill="#3d8b5e" opacity="0.5" rx="2"/>
+    <rect x="630" y="120" width="10" height="40"  fill="#b07a20" opacity="0.5" rx="2"/>
+
+    <!-- messages -->
+    <!-- register flow -->
+    <text x="95" y="82" fill="#555" font-size="9" font-style="italic">alt [Register]</text>
+    <line x1="100" y1="100" x2="270" y2="100" stroke="#888" stroke-width="1.2" marker-end="url(#s-arr)"/>
+    <text x="160" y="96" fill="#ccc" font-size="10">POST /auth/register</text>
+
+    <line x1="280" y1="115" x2="450" y2="115" stroke="#888" stroke-width="1.2" marker-end="url(#s-arr)"/>
+    <text x="330" y="111" fill="#ccc" font-size="10">createUser(dto)</text>
+
+    <line x1="460" y1="130" x2="630" y2="130" stroke="#888" stroke-width="1.2" marker-end="url(#s-arr)"/>
+    <text x="490" y="126" fill="#ccc" font-size="10">save(user)</text>
+
+    <line x1="630" y1="155" x2="460" y2="155" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#s-arr-r)"/>
+    <text x="490" y="151" fill="#888" font-size="10">user saved</text>
+
+    <line x1="450" y1="170" x2="280" y2="170" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#s-arr-r)"/>
+    <text x="320" y="166" fill="#888" font-size="10">UserResponseDTO</text>
+
+    <line x1="270" y1="190" x2="100" y2="190" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#s-arr-r)"/>
+    <text x="130" y="186" fill="#888" font-size="10">201 Created</text>
+
+    <!-- divider -->
+    <line x1="40" y1="215" x2="720" y2="215" stroke="#3a3630" stroke-width="0.7" stroke-dasharray="3 3"/>
+    <text x="50" y="228" fill="#555" font-size="9" font-style="italic">alt [Login]</text>
+
+    <!-- login flow -->
+    <rect x="90"  y="235" width="10" height="170" fill="#7c6fcd" opacity="0.5" rx="2"/>
+    <rect x="270" y="245" width="10" height="150" fill="#3a6fa8" opacity="0.5" rx="2"/>
+    <rect x="450" y="260" width="10" height="110" fill="#3d8b5e" opacity="0.5" rx="2"/>
+    <rect x="630" y="270" width="10" height="80"  fill="#b07a20" opacity="0.5" rx="2"/>
+
+    <line x1="100" y1="250" x2="270" y2="250" stroke="#888" stroke-width="1.2" marker-end="url(#s-arr)"/>
+    <text x="145" y="246" fill="#ccc" font-size="10">POST /auth/login</text>
+
+    <line x1="280" y1="265" x2="450" y2="265" stroke="#888" stroke-width="1.2" marker-end="url(#s-arr)"/>
+    <text x="330" y="261" fill="#ccc" font-size="10">validateCredentials()</text>
+
+    <line x1="460" y1="280" x2="630" y2="280" stroke="#888" stroke-width="1.2" marker-end="url(#s-arr)"/>
+    <text x="495" y="276" fill="#ccc" font-size="10">findByEmail()</text>
+
+    <line x1="630" y1="300" x2="460" y2="300" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#s-arr-r)"/>
+    <text x="490" y="296" fill="#888" font-size="10">User entity</text>
+
+    <line x1="460" y1="320" x2="280" y2="320" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#s-arr-r)"/>
+    <text x="305" y="316" fill="#888" font-size="10">bcrypt match → JWT</text>
+
+    <line x1="270" y1="360" x2="100" y2="360" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#s-arr-r)"/>
+    <text x="115" y="356" fill="#888" font-size="10">200 OK + JWT token</text>
+
+    <text x="110" y="390" fill="#c9854a" font-size="9.5">opt [role=ADMIN]</text>
+    <line x1="100" y1="400" x2="270" y2="400" stroke="#c9854a" stroke-width="1.2" marker-end="url(#s-arr)"/>
+    <text x="120" y="396" fill="#c9854a" font-size="10">redirect → /admin</text>
+  </svg>
+  </div>
+
+  <!-- SEQ 1: Booking -->
+  <div class="seq-panel diagram-wrap" id="sq1" style="display:none">
+  <svg viewBox="0 0 880 520" xmlns="http://www.w3.org/2000/svg" style="min-width:800px">
+    <defs>
+      <marker id="b-arr"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="0,0 9,5 0,10" fill="#888"/></marker>
+      <marker id="b-arr-r" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="9,0 0,5 9,10" fill="#555"/></marker>
+    </defs>
+    <rect x="20"  y="20" width="90" height="28" rx="4" fill="#2a2720" stroke="#7c6fcd" stroke-width="1"/>
+    <text x="65"  y="37" text-anchor="middle" fill="#a89de0" font-size="10.5" font-weight="600">User</text>
+    <rect x="168" y="20" width="110" height="28" rx="4" fill="#2a2720" stroke="#3a6fa8" stroke-width="1"/>
+    <text x="223" y="37" text-anchor="middle" fill="#7aaad4" font-size="10.5" font-weight="600">BookingController</text>
+    <rect x="340" y="20" width="110" height="28" rx="4" fill="#2a2720" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="395" y="37" text-anchor="middle" fill="#70c090" font-size="10.5" font-weight="600">BookingService</text>
+    <rect x="514" y="20" width="100" height="28" rx="4" fill="#2a2720" stroke="#c0604a" stroke-width="1"/>
+    <text x="564" y="37" text-anchor="middle" fill="#d4907a" font-size="10.5" font-weight="600">VendorService</text>
+    <rect x="678" y="20" width="100" height="28" rx="4" fill="#2a2720" stroke="#b0527a" stroke-width="1"/>
+    <text x="728" y="37" text-anchor="middle" fill="#d080a8" font-size="10.5" font-weight="600">PackageService</text>
+    <rect x="840" y="20" width="90" height="28" rx="4" fill="#2a2720" stroke="#b07a20" stroke-width="1"/>
+    <text x="885" y="37" text-anchor="middle" fill="#d4a844" font-size="10.5" font-weight="600">DB</text>
+
+    <line x1="65"  y1="48" x2="65"  y2="510" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="223" y1="48" x2="223" y2="510" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="395" y1="48" x2="395" y2="510" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="564" y1="48" x2="564" y2="510" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="728" y1="48" x2="728" y2="510" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="885" y1="48" x2="885" y2="510" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+
+    <line x1="75" y1="90" x2="213" y2="90" stroke="#888" stroke-width="1.2" marker-end="url(#b-arr)"/>
+    <text x="95" y="86" fill="#ccc" font-size="10">POST /bookings  {packageId, vendorId, date}</text>
+
+    <line x1="233" y1="108" x2="383" y2="108" stroke="#888" stroke-width="1.2" marker-end="url(#b-arr)"/>
+    <text x="255" y="104" fill="#ccc" font-size="10">createBooking(dto)</text>
+
+    <line x1="405" y1="125" x2="554" y2="125" stroke="#888" stroke-width="1.2" marker-end="url(#b-arr)"/>
+    <text x="430" y="121" fill="#ccc" font-size="10">checkAvailability(vendorId)</text>
+
+    <line x1="554" y1="143" x2="405" y2="143" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#b-arr-r)"/>
+    <text x="420" y="139" fill="#888" font-size="10">available = true</text>
+
+    <line x1="405" y1="160" x2="718" y2="160" stroke="#888" stroke-width="1.2" marker-end="url(#b-arr)"/>
+    <text x="500" y="156" fill="#ccc" font-size="10">getPackagePrice(packageId)</text>
+
+    <line x1="718" y1="178" x2="405" y2="178" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#b-arr-r)"/>
+    <text x="480" y="174" fill="#888" font-size="10">price : BigDecimal</text>
+
+    <line x1="405" y1="198" x2="875" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#b-arr)"/>
+    <text x="570" y="194" fill="#ccc" font-size="10">save(booking)</text>
+
+    <line x1="875" y1="220" x2="405" y2="220" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#b-arr-r)"/>
+    <text x="570" y="216" fill="#888" font-size="10">booking {id, status=PENDING}</text>
+
+    <line x1="383" y1="244" x2="233" y2="244" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#b-arr-r)"/>
+    <text x="253" y="240" fill="#888" font-size="10">BookingResponseDTO</text>
+
+    <line x1="213" y1="266" x2="75" y2="266" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#b-arr-r)"/>
+    <text x="90" y="262" fill="#888" font-size="10">201 Created + bookingId</text>
+
+    <text x="70" y="295" fill="#555" font-size="9" font-style="italic">opt [vendor unavailable]</text>
+    <line x1="383" y1="306" x2="233" y2="306" stroke="#e07060" stroke-width="1.1" stroke-dasharray="5 3" marker-end="url(#b-arr-r)"/>
+    <text x="245" y="302" fill="#e07060" font-size="10">throw VendorUnavailableException</text>
+    <line x1="213" y1="322" x2="75" y2="322" stroke="#e07060" stroke-width="1.1" stroke-dasharray="5 3" marker-end="url(#b-arr-r)"/>
+    <text x="85" y="318" fill="#e07060" font-size="10">409 Conflict</text>
+  </svg>
+  </div>
+
+  <!-- SEQ 2: Payment -->
+  <div class="seq-panel diagram-wrap" id="sq2" style="display:none">
+  <svg viewBox="0 0 760 480" xmlns="http://www.w3.org/2000/svg" style="min-width:680px">
+    <defs>
+      <marker id="p-arr"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="0,0 9,5 0,10" fill="#888"/></marker>
+      <marker id="p-arr-r" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="9,0 0,5 9,10" fill="#555"/></marker>
+    </defs>
+    <rect x="20"  y="20" width="90"  height="28" rx="4" fill="#2a2720" stroke="#7c6fcd" stroke-width="1"/>
+    <text x="65"  y="37" text-anchor="middle" fill="#a89de0" font-size="10.5" font-weight="600">User</text>
+    <rect x="170" y="20" width="110" height="28" rx="4" fill="#2a2720" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="225" y="37" text-anchor="middle" fill="#70c090" font-size="10.5" font-weight="600">PaymentController</text>
+    <rect x="346" y="20" width="110" height="28" rx="4" fill="#2a2720" stroke="#3a6fa8" stroke-width="1"/>
+    <text x="401" y="37" text-anchor="middle" fill="#7aaad4" font-size="10.5" font-weight="600">PaymentService</text>
+    <rect x="520" y="20" width="110" height="28" rx="4" fill="#2a2720" stroke="#3a6fa8" stroke-width="1"/>
+    <text x="575" y="37" text-anchor="middle" fill="#7aaad4" font-size="10.5" font-weight="600">BookingService</text>
+    <rect x="694" y="20" width="56" height="28" rx="4" fill="#2a2720" stroke="#b07a20" stroke-width="1"/>
+    <text x="722" y="37" text-anchor="middle" fill="#d4a844" font-size="10.5" font-weight="600">DB</text>
+
+    <line x1="65"  y1="48" x2="65"  y2="470" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="225" y1="48" x2="225" y2="470" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="401" y1="48" x2="401" y2="470" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="575" y1="48" x2="575" y2="470" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="722" y1="48" x2="722" y2="470" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+
+    <line x1="75" y1="85" x2="215" y2="85" stroke="#888" stroke-width="1.2" marker-end="url(#p-arr)"/>
+    <text x="80" y="81" fill="#ccc" font-size="10">POST /payments  {bookingId, method, amount}</text>
+
+    <line x1="235" y1="104" x2="391" y2="104" stroke="#888" stroke-width="1.2" marker-end="url(#p-arr)"/>
+    <text x="255" y="100" fill="#ccc" font-size="10">processPayment(dto)</text>
+
+    <line x1="411" y1="122" x2="565" y2="122" stroke="#888" stroke-width="1.2" marker-end="url(#p-arr)"/>
+    <text x="430" y="118" fill="#ccc" font-size="10">getBookingById(bookingId)</text>
+
+    <line x1="565" y1="140" x2="411" y2="140" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#p-arr-r)"/>
+    <text x="425" y="136" fill="#888" font-size="10">Booking entity</text>
+
+    <text x="235" y="162" fill="#555" font-size="9" font-style="italic">opt [booking.status != PENDING]</text>
+    <line x1="391" y1="172" x2="235" y2="172" stroke="#e07060" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#p-arr-r)"/>
+    <text x="250" y="168" fill="#e07060" font-size="10">throw InvalidBookingStateException</text>
+
+    <line x1="411" y1="190" x2="712" y2="190" stroke="#888" stroke-width="1.2" marker-end="url(#p-arr)"/>
+    <text x="510" y="186" fill="#ccc" font-size="10">save(payment)</text>
+
+    <line x1="712" y1="210" x2="411" y2="210" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#p-arr-r)"/>
+    <text x="480" y="206" fill="#888" font-size="10">payment persisted</text>
+
+    <line x1="411" y1="228" x2="565" y2="228" stroke="#888" stroke-width="1.2" marker-end="url(#p-arr)"/>
+    <text x="425" y="224" fill="#ccc" font-size="10">updateStatus(CONFIRMED)</text>
+
+    <line x1="565" y1="248" x2="712" y2="248" stroke="#888" stroke-width="1.2" marker-end="url(#p-arr)"/>
+    <text x="580" y="244" fill="#ccc" font-size="10">save(booking)</text>
+
+    <line x1="712" y1="268" x2="565" y2="268" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#p-arr-r)"/>
+    <text x="575" y="264" fill="#888" font-size="10">updated</text>
+
+    <line x1="391" y1="292" x2="235" y2="292" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#p-arr-r)"/>
+    <text x="255" y="288" fill="#888" font-size="10">PaymentResponseDTO</text>
+
+    <line x1="215" y1="314" x2="75" y2="314" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#p-arr-r)"/>
+    <text x="82" y="310" fill="#888" font-size="10">201 Created + paymentId</text>
+  </svg>
+  </div>
+
+  <!-- SEQ 3: Feedback -->
+  <div class="seq-panel diagram-wrap" id="sq3" style="display:none">
+  <svg viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg" style="min-width:640px">
+    <defs>
+      <marker id="f-arr"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="0,0 9,5 0,10" fill="#888"/></marker>
+      <marker id="f-arr-r" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="9,0 0,5 9,10" fill="#555"/></marker>
+    </defs>
+    <rect x="20"  y="20" width="90"  height="28" rx="4" fill="#2a2720" stroke="#7c6fcd" stroke-width="1"/>
+    <text x="65"  y="37" text-anchor="middle" fill="#a89de0" font-size="10.5" font-weight="600">User</text>
+    <rect x="168" y="20" width="114" height="28" rx="4" fill="#2a2720" stroke="#b07a20" stroke-width="1"/>
+    <text x="225" y="37" text-anchor="middle" fill="#d4a844" font-size="10.5" font-weight="600">FeedbackController</text>
+    <rect x="350" y="20" width="114" height="28" rx="4" fill="#2a2720" stroke="#b07a20" stroke-width="1"/>
+    <text x="407" y="37" text-anchor="middle" fill="#d4a844" font-size="10.5" font-weight="600">FeedbackService</text>
+    <rect x="532" y="20" width="110" height="28" rx="4" fill="#2a2720" stroke="#3a6fa8" stroke-width="1"/>
+    <text x="587" y="37" text-anchor="middle" fill="#7aaad4" font-size="10.5" font-weight="600">BookingService</text>
+    <rect x="694" y="20" width="56" height="28" rx="4" fill="#2a2720" stroke="#b07a20" stroke-width="1"/>
+    <text x="722" y="37" text-anchor="middle" fill="#d4a844" font-size="10.5" font-weight="600">DB</text>
+
+    <line x1="65"  y1="48" x2="65"  y2="420" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="225" y1="48" x2="225" y2="420" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="407" y1="48" x2="407" y2="420" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="587" y1="48" x2="587" y2="420" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="722" y1="48" x2="722" y2="420" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+
+    <line x1="75" y1="88" x2="215" y2="88" stroke="#888" stroke-width="1.2" marker-end="url(#f-arr)"/>
+    <text x="78" y="84" fill="#ccc" font-size="10">POST /feedback  {bookingId, rating, comment}</text>
+
+    <line x1="235" y1="106" x2="397" y2="106" stroke="#888" stroke-width="1.2" marker-end="url(#f-arr)"/>
+    <text x="255" y="102" fill="#ccc" font-size="10">submitFeedback(dto)</text>
+
+    <line x1="417" y1="122" x2="577" y2="122" stroke="#888" stroke-width="1.2" marker-end="url(#f-arr)"/>
+    <text x="430" y="118" fill="#ccc" font-size="10">verifyBookingCompleted(bookingId)</text>
+
+    <line x1="577" y1="140" x2="417" y2="140" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#f-arr-r)"/>
+    <text x="430" y="136" fill="#888" font-size="10">status = COMPLETED</text>
+
+    <text x="240" y="160" fill="#555" font-size="9" font-style="italic">opt [booking not COMPLETED]</text>
+    <line x1="397" y1="170" x2="235" y2="170" stroke="#e07060" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#f-arr-r)"/>
+    <text x="245" y="166" fill="#e07060" font-size="10">throw FeedbackNotAllowedException</text>
+
+    <line x1="417" y1="190" x2="712" y2="190" stroke="#888" stroke-width="1.2" marker-end="url(#f-arr)"/>
+    <text x="500" y="186" fill="#ccc" font-size="10">save(feedback{approved=false})</text>
+
+    <line x1="712" y1="210" x2="417" y2="210" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#f-arr-r)"/>
+    <text x="480" y="206" fill="#888" font-size="10">feedback saved</text>
+
+    <line x1="397" y1="232" x2="235" y2="232" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#f-arr-r)"/>
+    <text x="250" y="228" fill="#888" font-size="10">FeedbackResponseDTO</text>
+
+    <line x1="215" y1="254" x2="75" y2="254" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#f-arr-r)"/>
+    <text x="82" y="250" fill="#888" font-size="10">201 Created  (pending approval)</text>
+
+    <!-- admin approve -->
+    <text x="60" y="285" fill="#555" font-size="9" font-style="italic">ref [Admin approves — see Diagram 4]</text>
+    <line x1="40" y1="295" x2="710" y2="295" stroke="#3a3630" stroke-width="0.7" stroke-dasharray="3 3"/>
+    <text x="250" y="315" fill="#c9854a" font-size="10">Admin: PATCH /feedback/{id}/approve</text>
+    <line x1="235" y1="324" x2="397" y2="324" stroke="#c9854a" stroke-width="1.2" marker-end="url(#f-arr)"/>
+    <text x="255" y="320" fill="#c9854a" font-size="10">approveFeedback(id)</text>
+    <line x1="417" y1="342" x2="712" y2="342" stroke="#c9854a" stroke-width="1.2" marker-end="url(#f-arr)"/>
+    <text x="490" y="338" fill="#c9854a" font-size="10">update approved=true</text>
+  </svg>
+  </div>
+
+  <!-- SEQ 4: Admin Packages -->
+  <div class="seq-panel diagram-wrap" id="sq4" style="display:none">
+  <svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" style="min-width:600px">
+    <defs>
+      <marker id="a-arr"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="0,0 9,5 0,10" fill="#888"/></marker>
+      <marker id="a-arr-r" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto"><polygon points="9,0 0,5 9,10" fill="#555"/></marker>
+    </defs>
+    <rect x="20"  y="20" width="90"  height="28" rx="4" fill="#2a2720" stroke="#c9854a" stroke-width="1"/>
+    <text x="65"  y="37" text-anchor="middle" fill="#e0a870" font-size="10.5" font-weight="600">Admin</text>
+    <rect x="170" y="20" width="120" height="28" rx="4" fill="#2a2720" stroke="#b0527a" stroke-width="1"/>
+    <text x="230" y="37" text-anchor="middle" fill="#d080a8" font-size="10.5" font-weight="600">PackageController</text>
+    <rect x="356" y="20" width="120" height="28" rx="4" fill="#2a2720" stroke="#b0527a" stroke-width="1"/>
+    <text x="416" y="37" text-anchor="middle" fill="#d080a8" font-size="10.5" font-weight="600">PackageService</text>
+    <rect x="542" y="20" width="110" height="28" rx="4" fill="#2a2720" stroke="#b07a20" stroke-width="1"/>
+    <text x="597" y="37" text-anchor="middle" fill="#d4a844" font-size="10.5" font-weight="600">Database</text>
+
+    <line x1="65"  y1="48" x2="65"  y2="410" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="230" y1="48" x2="230" y2="410" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="416" y1="48" x2="416" y2="410" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+    <line x1="597" y1="48" x2="597" y2="410" stroke="#3a3630" stroke-width="1" stroke-dasharray="5 4"/>
+
+    <!-- CREATE -->
+    <text x="50" y="80" fill="#555" font-size="9" font-style="italic">loop [CRUD operations]</text>
+    <text x="50" y="94" fill="#666" font-size="9">CREATE</text>
+    <line x1="75" y1="102" x2="220" y2="102" stroke="#888" stroke-width="1.2" marker-end="url(#a-arr)"/>
+    <text x="78" y="98" fill="#ccc" font-size="10">POST /packages  {name, tier, price, vendors}</text>
+
+    <line x1="240" y1="118" x2="406" y2="118" stroke="#888" stroke-width="1.2" marker-end="url(#a-arr)"/>
+    <text x="258" y="114" fill="#ccc" font-size="10">createPackage(dto)</text>
+
+    <line x1="426" y1="134" x2="587" y2="134" stroke="#888" stroke-width="1.2" marker-end="url(#a-arr)"/>
+    <text x="460" y="130" fill="#ccc" font-size="10">save(package)</text>
+
+    <line x1="587" y1="152" x2="426" y2="152" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#a-arr-r)"/>
+    <text x="440" y="148" fill="#888" font-size="10">Package entity</text>
+
+    <line x1="406" y1="170" x2="240" y2="170" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#a-arr-r)"/>
+    <text x="258" y="166" fill="#888" font-size="10">PackageResponseDTO</text>
+
+    <line x1="220" y1="190" x2="75" y2="190" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#a-arr-r)"/>
+    <text x="82" y="186" fill="#888" font-size="10">201 Created</text>
+
+    <!-- UPDATE -->
+    <line x1="40" y1="210" x2="650" y2="210" stroke="#3a3630" stroke-width="0.7" stroke-dasharray="3 3"/>
+    <text x="50" y="226" fill="#666" font-size="9">UPDATE / TOGGLE ACTIVE</text>
+    <line x1="75" y1="236" x2="220" y2="236" stroke="#888" stroke-width="1.2" marker-end="url(#a-arr)"/>
+    <text x="78" y="232" fill="#ccc" font-size="10">PUT /packages/{id}  OR  PATCH /{id}/toggle</text>
+
+    <line x1="240" y1="254" x2="406" y2="254" stroke="#888" stroke-width="1.2" marker-end="url(#a-arr)"/>
+    <text x="258" y="250" fill="#ccc" font-size="10">updatePackage(id, dto)</text>
+
+    <line x1="426" y1="270" x2="587" y2="270" stroke="#888" stroke-width="1.2" marker-end="url(#a-arr)"/>
+    <text x="460" y="266" fill="#ccc" font-size="10">save(updated)</text>
+
+    <line x1="406" y1="292" x2="240" y2="292" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#a-arr-r)"/>
+    <text x="258" y="288" fill="#888" font-size="10">updated DTO</text>
+
+    <line x1="220" y1="308" x2="75" y2="308" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#a-arr-r)"/>
+    <text x="82" y="304" fill="#888" font-size="10">200 OK</text>
+
+    <!-- DELETE -->
+    <line x1="40" y1="325" x2="650" y2="325" stroke="#3a3630" stroke-width="0.7" stroke-dasharray="3 3"/>
+    <text x="50" y="340" fill="#666" font-size="9">DELETE</text>
+    <line x1="75" y1="350" x2="220" y2="350" stroke="#888" stroke-width="1.2" marker-end="url(#a-arr)"/>
+    <text x="82" y="346" fill="#ccc" font-size="10">DELETE /packages/{id}</text>
+
+    <line x1="240" y1="368" x2="406" y2="368" stroke="#888" stroke-width="1.2" marker-end="url(#a-arr)"/>
+    <text x="258" y="364" fill="#ccc" font-size="10">deletePackage(id)</text>
+
+    <line x1="406" y1="368" x2="587" y2="368" stroke="#888" stroke-width="1.2" marker-end="url(#a-arr)"/>
+
+    <line x1="406" y1="390" x2="240" y2="390" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#a-arr-r)"/>
+    <text x="258" y="386" fill="#888" font-size="10">void</text>
+    <line x1="220" y1="404" x2="75" y2="404" stroke="#555" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#a-arr-r)"/>
+    <text x="82" y="400" fill="#888" font-size="10">204 No Content</text>
+  </svg>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 3 · ER DIAGRAM
+══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="p2">
+  <div class="panel-title">Diagram 03</div>
+  <div class="panel-heading">Entity-Relationship Diagram</div>
+  <div class="panel-desc">Database-level ER diagram showing tables, primary keys, foreign keys and cardinality constraints. Booking contains both <code>vendor_id</code> and <code>package_id</code> foreign keys.</div>
+
+  <div class="diagram-wrap">
+  <svg viewBox="0 0 1040 800" xmlns="http://www.w3.org/2000/svg" style="min-width:900px">
+
+    <!-- USER table -->
+    <rect x="30"  y="30"  width="180" height="22" fill="#7c6fcd" rx="0"/>
+    <text x="120" y="44" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">users</text>
+    <rect x="30"  y="52"  width="180" height="220" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="38"  y="68"  fill="#f0f0f0" font-size="10.5" font-weight="700">🔑 id  BIGINT  PK</text>
+    <line x1="30" y1="72" x2="210" y2="72" stroke="#3a3630" stroke-width="0.6"/>
+    <text x="38"  y="86"  fill="#a89de0" font-size="10">name  VARCHAR(100)  NOT NULL</text>
+    <text x="38"  y="100" fill="#a89de0" font-size="10">email  VARCHAR(150)  UNIQUE</text>
+    <text x="38"  y="114" fill="#a89de0" font-size="10">password  VARCHAR(255)</text>
+    <text x="38"  y="128" fill="#a89de0" font-size="10">role  ENUM('USER','ADMIN')</text>
+    <text x="38"  y="142" fill="#a89de0" font-size="10">phone_number  VARCHAR(20)</text>
+    <text x="38"  y="156" fill="#a89de0" font-size="10">active  BOOLEAN  DEFAULT true</text>
+    <text x="38"  y="170" fill="#a89de0" font-size="10">created_at  DATETIME</text>
+    <text x="38"  y="184" fill="#a89de0" font-size="10">updated_at  DATETIME</text>
+
+    <!-- VENDOR table -->
+    <rect x="830" y="30"  width="180" height="22" fill="#c0604a" rx="0"/>
+    <text x="920" y="44" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">vendors</text>
+    <rect x="830" y="52"  width="180" height="236" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="838" y="68"  fill="#f0f0f0" font-size="10.5" font-weight="700">🔑 id  BIGINT  PK</text>
+    <line x1="830" y1="72" x2="1010" y2="72" stroke="#3a3630" stroke-width="0.6"/>
+    <text x="838" y="86"  fill="#d4907a" font-size="10">business_name  VARCHAR(150)</text>
+    <text x="838" y="100" fill="#d4907a" font-size="10">category  VARCHAR(80)</text>
+    <text x="838" y="114" fill="#d4907a" font-size="10">description  TEXT</text>
+    <text x="838" y="128" fill="#d4907a" font-size="10">contact_email  VARCHAR(150)</text>
+    <text x="838" y="142" fill="#d4907a" font-size="10">contact_phone  VARCHAR(20)</text>
+    <text x="838" y="156" fill="#d4907a" font-size="10">price_range  VARCHAR(50)</text>
+    <text x="838" y="170" fill="#d4907a" font-size="10">rating  DOUBLE</text>
+    <text x="838" y="184" fill="#d4907a" font-size="10">image_url  VARCHAR(500)</text>
+    <text x="838" y="198" fill="#d4907a" font-size="10">created_at  DATETIME</text>
+    <text x="838" y="212" fill="#d4907a" font-size="10">updated_at  DATETIME</text>
+
+    <!-- PACKAGE table -->
+    <rect x="30"  y="430" width="200" height="22" fill="#b0527a" rx="0"/>
+    <text x="130" y="444" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">packages</text>
+    <rect x="30"  y="452" width="200" height="220" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="38"  y="468" fill="#f0f0f0" font-size="10.5" font-weight="700">🔑 id  BIGINT  PK</text>
+    <line x1="30" y1="472" x2="230" y2="472" stroke="#3a3630" stroke-width="0.6"/>
+    <text x="38"  y="486" fill="#d080a8" font-size="10">name  VARCHAR(150)</text>
+    <text x="38"  y="500" fill="#d080a8" font-size="10">tier  ENUM('BASIC','PREMIUM','LUXURY')</text>
+    <text x="38"  y="514" fill="#d080a8" font-size="10">description  TEXT</text>
+    <text x="38"  y="528" fill="#d080a8" font-size="10">price  DECIMAL(10,2)</text>
+    <text x="38"  y="542" fill="#d080a8" font-size="10">active  BOOLEAN  DEFAULT true</text>
+    <text x="38"  y="556" fill="#d080a8" font-size="10">created_at  DATETIME</text>
+    <text x="38"  y="570" fill="#d080a8" font-size="10">updated_at  DATETIME</text>
+
+    <!-- BOOKING table (centre) -->
+    <rect x="420" y="280" width="200" height="22" fill="#3a6fa8" rx="0"/>
+    <text x="520" y="294" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">bookings</text>
+    <rect x="420" y="302" width="200" height="220" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="428" y="318" fill="#f0f0f0" font-size="10.5" font-weight="700">🔑 id  BIGINT  PK</text>
+    <line x1="420" y1="322" x2="620" y2="322" stroke="#3a3630" stroke-width="0.6"/>
+    <text x="428" y="336" fill="#7aaad4" font-size="10">🔗 user_id  BIGINT  FK</text>
+    <text x="428" y="350" fill="#7aaad4" font-size="10">🔗 vendor_id  BIGINT  FK</text>
+    <text x="428" y="364" fill="#7aaad4" font-size="10">🔗 package_id  BIGINT  FK</text>
+    <line x1="420" y1="370" x2="620" y2="370" stroke="#3a3630" stroke-width="0.6"/>
+    <text x="428" y="384" fill="#7aaad4" font-size="10">event_date  DATE  NOT NULL</text>
+    <text x="428" y="398" fill="#7aaad4" font-size="10">amount  DECIMAL(10,2)</text>
+    <text x="428" y="412" fill="#7aaad4" font-size="10">status  ENUM('PENDING','CONFIRMED',</text>
+    <text x="428" y="424" fill="#7aaad4" font-size="10">         'CANCELLED','COMPLETED')</text>
+    <text x="428" y="438" fill="#7aaad4" font-size="10">created_at  DATETIME</text>
+
+    <!-- PAYMENT table -->
+    <rect x="780" y="430" width="210" height="22" fill="#3d8b5e" rx="0"/>
+    <text x="885" y="444" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">payments</text>
+    <rect x="780" y="452" width="210" height="236" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="788" y="468" fill="#f0f0f0" font-size="10.5" font-weight="700">🔑 id  BIGINT  PK</text>
+    <line x1="780" y1="472" x2="990" y2="472" stroke="#3a3630" stroke-width="0.6"/>
+    <text x="788" y="486" fill="#70c090" font-size="10">🔗 booking_id  BIGINT  FK  UNIQUE</text>
+    <text x="788" y="500" fill="#70c090" font-size="10">🔗 user_id  BIGINT  FK</text>
+    <line x1="780" y1="506" x2="990" y2="506" stroke="#3a3630" stroke-width="0.6"/>
+    <text x="788" y="520" fill="#70c090" font-size="10">amount  DECIMAL(10,2)</text>
+    <text x="788" y="534" fill="#70c090" font-size="10">payment_method  ENUM</text>
+    <text x="788" y="548" fill="#70c090" font-size="10">status  ENUM('PENDING','PAID',</text>
+    <text x="788" y="560" fill="#70c090" font-size="10">       'FAILED','REFUNDED')</text>
+    <text x="788" y="574" fill="#70c090" font-size="10">payment_date  DATE</text>
+    <text x="788" y="588" fill="#70c090" font-size="10">notes  TEXT</text>
+    <text x="788" y="602" fill="#70c090" font-size="10">created_at  DATETIME</text>
+    <text x="788" y="616" fill="#70c090" font-size="10">updated_at  DATETIME</text>
+
+    <!-- FEEDBACK table -->
+    <rect x="400" y="600" width="210" height="22" fill="#b07a20" rx="0"/>
+    <text x="505" y="614" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">feedback</text>
+    <rect x="400" y="622" width="210" height="220" fill="#1e1c19" stroke="#3a3630" stroke-width="0.8"/>
+    <text x="408" y="638" fill="#f0f0f0" font-size="10.5" font-weight="700">🔑 id  BIGINT  PK</text>
+    <line x1="400" y1="642" x2="610" y2="642" stroke="#3a3630" stroke-width="0.6"/>
+    <text x="408" y="656" fill="#d4a844" font-size="10">🔗 user_id  BIGINT  FK</text>
+    <text x="408" y="670" fill="#d4a844" font-size="10">🔗 vendor_id  BIGINT  FK</text>
+    <text x="408" y="684" fill="#d4a844" font-size="10">🔗 booking_id  BIGINT  FK</text>
+    <line x1="400" y1="690" x2="610" y2="690" stroke="#3a3630" stroke-width="0.6"/>
+    <text x="408" y="704" fill="#d4a844" font-size="10">rating  TINYINT  CHECK(1..5)</text>
+    <text x="408" y="718" fill="#d4a844" font-size="10">comment  TEXT</text>
+    <text x="408" y="732" fill="#d4a844" font-size="10">reviewer_name  VARCHAR(100)</text>
+    <text x="408" y="746" fill="#d4a844" font-size="10">vendor_category  VARCHAR(80)</text>
+    <text x="408" y="760" fill="#d4a844" font-size="10">approved  BOOLEAN  DEFAULT false</text>
+    <text x="408" y="774" fill="#d4a844" font-size="10">created_at  DATETIME</text>
+
+    <!-- ── FK LINES ── -->
+    <!-- users → bookings (user_id) -->
+    <path d="M120 272 L120 310 L420 310" fill="none" stroke="#7c6fcd" stroke-width="1.3"/>
+    <text x="40" y="270" fill="#7c6fcd" font-size="10">1</text>
+    <text x="402" y="308" fill="#7c6fcd" font-size="10">N</text>
+
+    <!-- vendors → bookings (vendor_id) -->
+    <path d="M920 288 L920 350 L620 350" fill="none" stroke="#c0604a" stroke-width="1.3"/>
+    <text x="924" y="286" fill="#c0604a" font-size="10">1</text>
+    <text x="622" y="348" fill="#c0604a" font-size="10">N</text>
+
+    <!-- packages → bookings (package_id) -->
+    <path d="M230 530 L340 530 L340 364 L420 364" fill="none" stroke="#b0527a" stroke-width="1.3"/>
+    <text x="212" y="528" fill="#b0527a" font-size="10">1</text>
+    <text x="402" y="362" fill="#b0527a" font-size="10">N</text>
+
+    <!-- bookings → payments (booking_id) -->
+    <path d="M620 390 L720 390 L720 460 L780 460" fill="none" stroke="#3d8b5e" stroke-width="1.3"/>
+    <text x="622" y="388" fill="#3d8b5e" font-size="10">1</text>
+    <text x="762" y="458" fill="#3d8b5e" font-size="10">1</text>
+
+    <!-- bookings → feedback (booking_id) -->
+    <path d="M520 522 L520 580 L505 580 L505 622" fill="none" stroke="#b07a20" stroke-width="1.3"/>
+    <text x="524" y="524" fill="#b07a20" font-size="10">1</text>
+    <text x="488" y="620" fill="#b07a20" font-size="10">N</text>
+
+    <!-- users → feedback (user_id) -->
+    <path d="M30 160 L14 160 L14 756 L400 756" fill="none" stroke="#7c6fcd" stroke-width="1" stroke-dasharray="5 3"/>
+    <text x="16" y="158" fill="#7c6fcd" font-size="10">1</text>
+    <text x="384" y="754" fill="#7c6fcd" font-size="10">N</text>
+
+    <!-- vendors → feedback (vendor_id) -->
+    <path d="M1010 170 L1024 170 L1024 768 L610 768" fill="none" stroke="#c0604a" stroke-width="1" stroke-dasharray="5 3"/>
+    <text x="1014" y="168" fill="#c0604a" font-size="10">1</text>
+    <text x="612" y="766" fill="#c0604a" font-size="10">N</text>
+
+    <!-- users → payments (user_id) -->
+    <path d="M210 120 L780 490" fill="none" stroke="#7c6fcd" stroke-width="0.8" stroke-dasharray="4 3"/>
+
+    <!-- Legend -->
+    <rect x="30" y="756" width="360" height="36" fill="#222018" stroke="#3a3630" stroke-width="0.8" rx="4"/>
+    <text x="42" y="769" fill="#888" font-size="9.5" font-weight="700">LEGEND:</text>
+    <text x="100" y="769" fill="#f0f0f0" font-size="10">🔑 PK</text>
+    <text x="138" y="769" fill="#888" font-size="9.5">Primary Key</text>
+    <text x="100" y="784" fill="#70c090" font-size="10">🔗 FK</text>
+    <text x="138" y="784" fill="#888" font-size="9.5">Foreign Key</text>
+    <text x="215" y="769" fill="#ccc" font-size="10">1 / N</text>
+    <text x="240" y="769" fill="#888" font-size="9.5">cardinality</text>
+    <line x1="215" y1="778" x2="248" y2="778" stroke="#888" stroke-width="1" stroke-dasharray="4 2"/>
+    <text x="252" y="782" fill="#888" font-size="9.5">indirect FK ref</text>
+  </svg>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL 4 · COMPONENT / DEPENDENCY DIAGRAM
+══════════════════════════════════════════════════════════════ -->
+<div class="panel" id="p3">
+  <div class="panel-title">Diagram 04</div>
+  <div class="panel-heading">Component &amp; Dependency Diagram</div>
+  <div class="panel-desc">UML component diagram showing frontend modules, backend layers (Controller → Service → Repository), and how they depend on shared infrastructure. Dependency arrows point from the dependent to the depended-upon component.</div>
+
+  <div class="diagram-wrap">
+  <svg viewBox="0 0 1040 760" xmlns="http://www.w3.org/2000/svg" style="min-width:920px">
+    <defs>
+      <marker id="dep-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M1 1.5L8.5 5L1 8.5" fill="none" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+      <marker id="dep-arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M1 1.5L8.5 5L1 8.5" fill="none" stroke="#c9854a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <!-- ── LAYER BACKGROUNDS ── -->
+    <!-- Frontend -->
+    <rect x="20"  y="20"  width="430" height="200" rx="6" fill="rgba(124,111,205,0.05)" stroke="#7c6fcd" stroke-width="0.8" stroke-dasharray="6 3"/>
+    <text x="34"  y="38"  fill="#7c6fcd" font-size="10" font-weight="600" letter-spacing="0.1em">«subsystem»  FRONTEND  (React)</text>
+
+    <!-- Backend -->
+    <rect x="20"  y="260" width="700" height="160" rx="6" fill="rgba(58,111,168,0.05)" stroke="#3a6fa8" stroke-width="0.8" stroke-dasharray="6 3"/>
+    <text x="34"  y="278" fill="#3a6fa8" font-size="10" font-weight="600" letter-spacing="0.1em">«subsystem»  BACKEND  (Spring Boot)</text>
+
+    <!-- Repository -->
+    <rect x="20"  y="460" width="700" height="100" rx="6" fill="rgba(61,139,94,0.05)" stroke="#3d8b5e" stroke-width="0.8" stroke-dasharray="6 3"/>
+    <text x="34"  y="478" fill="#3d8b5e" font-size="10" font-weight="600" letter-spacing="0.1em">«subsystem»  PERSISTENCE  (Spring Data JPA)</text>
+
+    <!-- Infrastructure -->
+    <rect x="20"  y="600" width="700" height="80" rx="6" fill="rgba(176,122,32,0.05)" stroke="#b07a20" stroke-width="0.8" stroke-dasharray="6 3"/>
+    <text x="34"  y="618" fill="#b07a20" font-size="10" font-weight="600" letter-spacing="0.1em">«subsystem»  INFRASTRUCTURE</text>
+
+    <!-- Auth / Security cross-cutting -->
+    <rect x="760" y="260" width="260" height="420" rx="6" fill="rgba(176,82,122,0.05)" stroke="#b0527a" stroke-width="0.8" stroke-dasharray="6 3"/>
+    <text x="774" y="278" fill="#b0527a" font-size="10" font-weight="600" letter-spacing="0.1em">«cross-cutting»</text>
+    <text x="774" y="292" fill="#b0527a" font-size="10" font-weight="600" letter-spacing="0.1em">SECURITY / AUTH</text>
+
+    <!-- ── FRONTEND COMPONENTS ── -->
+    <!-- Pages -->
+    <rect x="36"  y="50"  width="110" height="28" rx="4" fill="#2a2720" stroke="#7c6fcd" stroke-width="1"/>
+    <text x="91"  y="67"  text-anchor="middle" fill="#a89de0" font-size="10.5" font-weight="600">Pages</text>
+    <text x="91"  y="96"  text-anchor="middle" fill="#666" font-size="9">users · packages</text>
+    <text x="91"  y="108" text-anchor="middle" fill="#666" font-size="9">payments · admin</text>
+
+    <!-- Services (FE) -->
+    <rect x="186" y="50"  width="110" height="28" rx="4" fill="#2a2720" stroke="#7c6fcd" stroke-width="1"/>
+    <text x="241" y="67"  text-anchor="middle" fill="#a89de0" font-size="10.5" font-weight="600">FE Services</text>
+    <text x="241" y="96"  text-anchor="middle" fill="#666" font-size="9">userService.js</text>
+    <text x="241" y="108" text-anchor="middle" fill="#666" font-size="9">paymentService.js …</text>
+
+    <!-- Context -->
+    <rect x="336" y="50"  width="100" height="28" rx="4" fill="#2a2720" stroke="#7c6fcd" stroke-width="1"/>
+    <text x="386" y="67"  text-anchor="middle" fill="#a89de0" font-size="10.5" font-weight="600">AuthContext</text>
+    <text x="386" y="96"  text-anchor="middle" fill="#666" font-size="9">AuthContext.jsx</text>
+    <text x="386" y="108" text-anchor="middle" fill="#666" font-size="9">ProtectedAdminRoute</text>
+
+    <!-- Pages → FE Services -->
+    <line x1="146" y1="64" x2="186" y2="64" stroke="#7c6fcd" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <!-- Pages → AuthContext -->
+    <path d="M91 78 L91 130 L386 130 L386 110" fill="none" stroke="#7c6fcd" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+
+    <!-- FE Services → (HTTP to backend) label -->
+    <text x="241" y="148" text-anchor="middle" fill="#444" font-size="9" font-style="italic">HTTP / REST</text>
+    <line x1="241" y1="152" x2="241" y2="260" stroke="#444" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+
+    <!-- ── BACKEND COMPONENTS (Controllers → Services) ── -->
+    <!-- UserController -->
+    <rect x="36"  y="290" width="110" height="28" rx="4" fill="#2a2720" stroke="#3a6fa8" stroke-width="1"/>
+    <text x="91"  y="307" text-anchor="middle" fill="#7aaad4" font-size="10" font-weight="600">UserController</text>
+
+    <rect x="186" y="290" width="110" height="28" rx="4" fill="#2a2720" stroke="#3a6fa8" stroke-width="1"/>
+    <text x="241" y="307" text-anchor="middle" fill="#7aaad4" font-size="10" font-weight="600">BookingController</text>
+
+    <rect x="336" y="290" width="110" height="28" rx="4" fill="#2a2720" stroke="#3a6fa8" stroke-width="1"/>
+    <text x="391" y="307" text-anchor="middle" fill="#7aaad4" font-size="10" font-weight="600">PaymentController</text>
+
+    <rect x="486" y="290" width="110" height="28" rx="4" fill="#2a2720" stroke="#3a6fa8" stroke-width="1"/>
+    <text x="541" y="307" text-anchor="middle" fill="#7aaad4" font-size="10" font-weight="600">PackageController</text>
+
+    <rect x="486" y="336" width="110" height="28" rx="4" fill="#2a2720" stroke="#b07a20" stroke-width="1"/>
+    <text x="541" y="353" text-anchor="middle" fill="#d4a844" font-size="10" font-weight="600">FeedbackController</text>
+
+    <!-- Services -->
+    <rect x="36"  y="370" width="110" height="28" rx="4" fill="#222018" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="91"  y="387" text-anchor="middle" fill="#70c090" font-size="10" font-weight="600">UserService</text>
+
+    <rect x="186" y="370" width="110" height="28" rx="4" fill="#222018" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="241" y="387" text-anchor="middle" fill="#70c090" font-size="10" font-weight="600">BookingService</text>
+
+    <rect x="336" y="370" width="110" height="28" rx="4" fill="#222018" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="391" y="387" text-anchor="middle" fill="#70c090" font-size="10" font-weight="600">PaymentService</text>
+
+    <rect x="486" y="370" width="110" height="28" rx="4" fill="#222018" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="541" y="387" text-anchor="middle" fill="#70c090" font-size="10" font-weight="600">PackageService</text>
+
+    <!-- Controller → Service dep arrows -->
+    <line x1="91"  y1="318" x2="91"  y2="370" stroke="#3a6fa8" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <line x1="241" y1="318" x2="241" y2="370" stroke="#3a6fa8" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <line x1="391" y1="318" x2="391" y2="370" stroke="#3a6fa8" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <line x1="541" y1="318" x2="541" y2="370" stroke="#3a6fa8" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+
+    <!-- BookingService ←→ PaymentService, PackageService -->
+    <path d="M296 384 L336 384" fill="none" stroke="#3d8b5e" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#dep-arr)"/>
+    <path d="M446 384 L486 384" fill="none" stroke="#3d8b5e" stroke-width="1" stroke-dasharray="4 2" marker-end="url(#dep-arr)"/>
+
+    <!-- ── REPOSITORIES ── -->
+    <rect x="36"  y="490" width="110" height="28" rx="4" fill="#1c1a17" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="91"  y="507" text-anchor="middle" fill="#5aaa70" font-size="9.5" font-weight="600">UserRepository</text>
+
+    <rect x="186" y="490" width="110" height="28" rx="4" fill="#1c1a17" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="241" y="507" text-anchor="middle" fill="#5aaa70" font-size="9.5" font-weight="600">BookingRepository</text>
+
+    <rect x="336" y="490" width="110" height="28" rx="4" fill="#1c1a17" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="391" y="507" text-anchor="middle" fill="#5aaa70" font-size="9.5" font-weight="600">PaymentRepository</text>
+
+    <rect x="486" y="490" width="110" height="28" rx="4" fill="#1c1a17" stroke="#3d8b5e" stroke-width="1"/>
+    <text x="541" y="507" text-anchor="middle" fill="#5aaa70" font-size="9.5" font-weight="600">PackageRepository</text>
+
+    <!-- Service → Repository dep arrows -->
+    <line x1="91"  y1="398" x2="91"  y2="490" stroke="#3d8b5e" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <line x1="241" y1="398" x2="241" y2="490" stroke="#3d8b5e" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <line x1="391" y1="398" x2="391" y2="490" stroke="#3d8b5e" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <line x1="541" y1="398" x2="541" y2="490" stroke="#3d8b5e" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+
+    <!-- ── INFRASTRUCTURE ── -->
+    <rect x="36"  y="626" width="120" height="28" rx="4" fill="#1c1a17" stroke="#b07a20" stroke-width="1"/>
+    <text x="96"  y="643" text-anchor="middle" fill="#d4a844" font-size="10" font-weight="600">MySQL Database</text>
+
+    <rect x="196" y="626" width="130" height="28" rx="4" fill="#1c1a17" stroke="#b07a20" stroke-width="1"/>
+    <text x="261" y="643" text-anchor="middle" fill="#d4a844" font-size="10" font-weight="600">Spring Security</text>
+
+    <rect x="370" y="626" width="130" height="28" rx="4" fill="#1c1a17" stroke="#b07a20" stroke-width="1"/>
+    <text x="435" y="643" text-anchor="middle" fill="#d4a844" font-size="10" font-weight="600">JWT Token Provider</text>
+
+    <rect x="540" y="626" width="130" height="28" rx="4" fill="#1c1a17" stroke="#b07a20" stroke-width="1"/>
+    <text x="605" y="643" text-anchor="middle" fill="#d4a844" font-size="10" font-weight="600">Hibernate / JPA</text>
+
+    <!-- Repositories → DB -->
+    <line x1="91"  y1="518" x2="91"  y2="626" stroke="#b07a20" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <line x1="241" y1="518" x2="241" y2="626" stroke="#b07a20" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <line x1="391" y1="518" x2="391" y2="626" stroke="#b07a20" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <line x1="541" y1="518" x2="541" y2="626" stroke="#b07a20" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+
+    <!-- Repo → Hibernate -->
+    <path d="M596 518 L605 518 L605 626" fill="none" stroke="#b07a20" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+
+    <!-- ── SECURITY cross-cutting ── -->
+    <rect x="780" y="310" width="220" height="28" rx="4" fill="#2a2720" stroke="#b0527a" stroke-width="1"/>
+    <text x="890" y="327" text-anchor="middle" fill="#d080a8" font-size="10" font-weight="600">JwtAuthenticationFilter</text>
+
+    <rect x="780" y="358" width="220" height="28" rx="4" fill="#2a2720" stroke="#b0527a" stroke-width="1"/>
+    <text x="890" y="375" text-anchor="middle" fill="#d080a8" font-size="10" font-weight="600">SecurityConfig</text>
+
+    <rect x="780" y="406" width="220" height="28" rx="4" fill="#2a2720" stroke="#b0527a" stroke-width="1"/>
+    <text x="890" y="423" text-anchor="middle" fill="#d080a8" font-size="10" font-weight="600">PasswordEncoder  (BCrypt)</text>
+
+    <rect x="780" y="454" width="220" height="28" rx="4" fill="#2a2720" stroke="#b0527a" stroke-width="1"/>
+    <text x="890" y="471" text-anchor="middle" fill="#d080a8" font-size="10" font-weight="600">RoleBasedAccessControl</text>
+
+    <rect x="780" y="502" width="220" height="28" rx="4" fill="#2a2720" stroke="#b0527a" stroke-width="1"/>
+    <text x="890" y="519" text-anchor="middle" fill="#d080a8" font-size="10" font-weight="600">AuthService  (login/register)</text>
+
+    <!-- Security deps -->
+    <line x1="780" y1="324" x2="760" y2="324" stroke="#b0527a" stroke-width="1.1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <text x="700" y="322" fill="#b0527a" font-size="8.5">intercepts</text>
+
+    <line x1="780" y1="372" x2="760" y2="372" stroke="#b0527a" stroke-width="1.1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <text x="700" y="370" fill="#b0527a" font-size="8.5">configures</text>
+
+    <line x1="780" y1="468" x2="760" y2="468" stroke="#b0527a" stroke-width="1.1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <text x="700" y="466" fill="#b0527a" font-size="8.5">role guards</text>
+
+    <line x1="890" y1="530" x2="890" y2="630" stroke="#b0527a" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+
+    <rect x="780" y="630" width="220" height="28" rx="4" fill="#1c1a17" stroke="#b07a20" stroke-width="1"/>
+    <text x="890" y="647" text-anchor="middle" fill="#d4a844" font-size="10" font-weight="600">JWT Token Provider</text>
+
+    <!-- Legend bottom -->
+    <rect x="20" y="706" width="700" height="38" fill="#1c1a17" stroke="#3a3630" stroke-width="0.8" rx="4"/>
+    <text x="34" y="720" fill="#888" font-size="9.5" font-weight="700">LEGEND:</text>
+    <line x1="100" y1="718" x2="138" y2="718" stroke="#666" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#dep-arr)"/>
+    <text x="144" y="722" fill="#666" font-size="9.5">«use» dependency</text>
+    <line x1="290" y1="718" x2="328" y2="718" stroke="#c9854a" stroke-width="1.2" marker-end="url(#dep-arr-b)"/>
+    <text x="334" y="722" fill="#666" font-size="9.5">REST call (FE→BE)</text>
+    <text x="100" y="736" fill="#7c6fcd" font-size="9">■</text><text x="112" y="736" fill="#666" font-size="9">Frontend</text>
+    <text x="190" y="736" fill="#3a6fa8" font-size="9">■</text><text x="202" y="736" fill="#666" font-size="9">Backend</text>
+    <text x="270" y="736" fill="#3d8b5e" font-size="9">■</text><text x="282" y="736" fill="#666" font-size="9">Persistence</text>
+    <text x="370" y="736" fill="#b07a20" font-size="9">■</text><text x="382" y="736" fill="#666" font-size="9">Infrastructure</text>
+    <text x="476" y="736" fill="#b0527a" font-size="9">■</text><text x="488" y="736" fill="#666" font-size="9">Security (cross-cutting)</text>
+  </svg>
+  </div>
+
+  <!-- issues grid below the diagram -->
+  <div class="issues-grid">
+    <div class="issue-card">
+      <div class="issue-card-title">⚠ Circular Dependency Risk</div>
+      <span class="tag tag-amber">DESIGN</span>
+      <p>BookingService calls PaymentService, and PaymentService calls BookingService to update status. This creates a circular dependency. Resolve by extracting a <code>BookingStatusService</code> or using an event-driven approach (Spring ApplicationEvent).</p>
+    </div>
+    <div class="issue-card">
+      <div class="issue-card-title">⚠ Vendor Denormalization in Payment</div>
+      <span class="tag tag-red">DATA</span>
+      <p>The original Payment entity stored <code>vendorName : String</code> — a denormalized copy. This is now removed; vendor info should be resolved via <code>booking → vendor</code>. Keeping a redundant copy risks data divergence.</p>
+    </div>
+    <div class="issue-card">
+      <div class="issue-card-title">⚠ Booking→Feedback Multiplicity</div>
+      <span class="tag tag-red">SCHEMA</span>
+      <p>Original diagram marked this as 1..1. A booking may involve multiple vendors (via a package), so a user should be able to leave separate feedback per vendor. Corrected to 1..* in this file.</p>
+    </div>
+    <div class="issue-card">
+      <div class="issue-card-title">⚠ Missing packageId FK on Booking</div>
+      <span class="tag tag-red">SCHEMA</span>
+      <p>The original class diagram had no link from Booking to Package. Without this FK the system cannot determine which package was booked, breaking package management and reporting. Added in both Class and ER diagrams.</p>
+    </div>
+    <div class="issue-card">
+      <div class="issue-card-title">ℹ Feedback Approval Flow</div>
+      <span class="tag tag-blue">WORKFLOW</span>
+      <p>Feedback is saved with <code>approved = false</code> by default. Only an Admin can approve it via <code>PATCH /feedback/{id}/approve</code>. This admin-side action is not guarded in the original routes — <code>ProtectedAdminRoute</code> or a backend <code>@PreAuthorize("ROLE_ADMIN")</code> should protect it.</p>
+    </div>
+    <div class="issue-card">
+      <div class="issue-card-title">ℹ includedVendors — Separate Table</div>
+      <span class="tag tag-blue">SCHEMA</span>
+      <p><code>Package.includedVendors : List&lt;VendorCategory&gt;</code> is stored as an element collection. For complex querying, consider a <code>package_vendor_categories</code> join table instead of a serialized list.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Tab switching ──
+  const panels  = document.querySelectorAll('.panel');
+  const tabBtns = document.querySelectorAll('.tab-btn');
+
+  function show(i) {
+    panels.forEach((p, j)  => p.classList.toggle('active', j === i));
+    tabBtns.forEach((b, j) => b.classList.toggle('active', j === i));
+  }
+
+  // ── Sequence sub-tabs ──
+  const seqBtns  = document.querySelectorAll('.seq-btn');
+
+  function showSeq(i) {
+    document.querySelectorAll('.seq-panel').forEach((p, j) => {
+      p.style.display = j === i ? 'block' : 'none';
+    });
+    seqBtns.forEach((b, j) => {
+      b.style.color       = j === i ? 'var(--accent)' : 'var(--muted)';
+      b.style.borderColor = j === i ? 'var(--accent)' : 'var(--border)';
+    });
+  }
+</script>
+</body>
+</html>

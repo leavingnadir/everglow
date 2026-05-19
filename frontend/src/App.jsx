@@ -306,12 +306,8 @@ function App() {
           <Route path="/admin/bookings" element={<ProtectedAdminRoute><AdminBookings /></ProtectedAdminRoute>} />
           <Route path="/admin/vendors" element={<ProtectedAdminRoute><AdminVendorDashboard /></ProtectedAdminRoute>} />
 
-          <Route path="/admin/feedback" element={
-            <ProtectedAdminRoute>
-              <AdminFeedbackPage />
-            </ProtectedAdminRoute>
-          } />
-        </Routes>
+          <Route path="/admin/feedback" element={<ProtectedAdminRoute><AdminFeedbackPage /></ProtectedAdminRoute>} />
+          <Route path="/admin/payments" element={<ProtectedAdminRoute><PaymentList /></ProtectedAdminRoute>}/></Routes>
       </BrowserRouter>
     </AuthProvider>
   )
