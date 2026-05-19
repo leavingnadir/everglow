@@ -166,7 +166,7 @@ export default function PackageCard({ pkg, isAdmin, onEdit, onDelete, onClick })
               isBooked ? (
                 <button disabled className="pkg-book-btn" style={{ background: "#E8E0D4", color: "#9C8B78", cursor: "not-allowed" }}>Fully Booked</button>
               ) : (
-                <button className="pkg-book-btn" onClick={(e) => { e.stopPropagation(); window.location.href = pkg.bookingUrl || "/bookings"; }}
+                <button className="pkg-book-btn" onClick={(e) => { e.stopPropagation(); window.location.href = "/bookings"; }}
                   style={{ background: tier.color, color: "#fff" }}
                   onMouseEnter={e => { e.target.style.opacity = "0.88"; e.target.style.letterSpacing = "0.3em"; }}
                   onMouseLeave={e => { e.target.style.opacity = "1"; e.target.style.letterSpacing = "0.25em"; }}>
