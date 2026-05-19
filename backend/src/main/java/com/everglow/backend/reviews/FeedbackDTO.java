@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-// DTO class used for transferring feedback data
+// DTO class used for transferring feedback data(5)
 public class FeedbackDTO {
 
     // Request DTO used when creating or updating feedback
