@@ -186,8 +186,8 @@ A quick reference for the most commonly used Git commands.
 ## ⚙️ Initial Setup
 
 ```bash
-git config --global user.name "Your Name"        # Set your name
-git config --global user.email "you@email.com"   # Set your email
+git config --global user.name "IT-25101509"        # Set your name
+git config --global user.email "IT25101509@my.sliit.lk"   # Set your email
 ```
 
 ## 📁 Starting a Repository
