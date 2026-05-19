@@ -258,11 +258,47 @@ function Navbar() {
       </nav>
 
       {user ? (
-        <button onClick={() => { logout(); navigate("/") }}>
+        <button onClick={() => { logout(); navigate("/") }}
+            style={{
+                backgroundColor: "#C0392B",
+                color: "#ffffff",
+                border: "2px solid #C0392B",
+                borderRadius: "0",
+                padding: "10px 24px",
+                fontSize: "14px",
+                cursor: "pointer",
+                transition: "background-color 0.2s, box-shadow 0.2s",
+            }}
+            onMouseEnter={e => {
+                  e.target.style.backgroundColor = "#922B21";
+                  e.target.style.boxShadow = "0 4px 14px rgba(192,57,43,0.4)";
+            }}
+            onMouseLeave={e => {
+                  e.target.style.backgroundColor = "#C0392B";
+                  e.target.style.boxShadow = "none";
+            }}>
           Sign Out
         </button>
       ) : (
-        <button onClick={() => navigate("/login")}>
+        <button onClick={() => navigate("/login")}
+            style={{
+                   backgroundColor: "#C0392B",
+                   color: "#ffffff",
+                   border: "2px solid #C0392B",
+                   borderRadius: "0",
+                   padding: "10px 24px",
+                   fontSize: "14px",
+                   cursor: "pointer",
+                   transition: "background-color 0.2s, box-shadow 0.2s",
+            }}
+            onMouseEnter={e => {
+                   e.target.style.backgroundColor = "#922B21";
+                   e.target.style.boxShadow = "0 4px 14px rgba(192,57,43,0.4)";
+            }}
+            onMouseLeave={e => {
+                   e.target.style.backgroundColor = "#C0392B";
+                   e.target.style.boxShadow = "none";
+            }}>
           Get Started
         </button>
       )}
