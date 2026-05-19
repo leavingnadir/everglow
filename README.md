@@ -217,22 +217,6 @@ git pull                             # Fetch and merge from remote
 
 ---
 
-## Members EndPoints
-
-Package Management Admin
-```
-http://localhost:5173/admin/packages
-```
-Package Management User 
-```
-http://localhost:5173/packages
-```
-
-http://localhost:5173/reviews/submit
-
-http://localhost:5173/admin/feedback
-
-
 ## Admin Credentials:
 
 Email: admin@everglow.com  
