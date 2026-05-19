@@ -17,7 +17,13 @@ const VendorForm = ({ vendorId, onSuccess }) => {
     imageUrl: '',
   });
 
-  const categories = ['Photography', 'Videography', 'Catering', 'Venue', 'Decoration', 'Music', 'Other'];
+  const categories = [
+    'Photography', 'Videography', 'Catering', 'Venue', 'Decoration',
+    'Music', 'Wedding Cars', 'Florist', 'Bridal Wear', 'Hair & Makeup',
+    'Jewelry', 'Honeymoon', 'Other',
+  ];
+
+  const priceRangeOptions = ['Budget', 'Mid-Range', 'Premium', 'Luxury'];
 
   useEffect(() => {
     if (vendorId) {
@@ -118,9 +124,14 @@ const VendorForm = ({ vendorId, onSuccess }) => {
           
           <div>
             <label className="block text-sm font-medium mb-1" style={{ color: "#2C2C2C" }}>Price Range</label>
-            <input type="text" name="priceRange" value={formData.priceRange} onChange={handleChange} placeholder="e.g. $500 - $1500"
+            <select name="priceRange" value={formData.priceRange} onChange={handleChange}
               className="w-full p-2 border rounded-sm outline-none focus:border-red-800 transition-colors"
-              style={{ borderColor: "#EDE0DF" }} />
+              style={{ borderColor: "#EDE0DF" }}>
+              <option value="">-- Select Price Range --</option>
+              {priceRangeOptions.map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
           </div>
 
           <div>
