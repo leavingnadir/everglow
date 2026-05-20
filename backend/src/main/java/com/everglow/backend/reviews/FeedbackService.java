@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Marks this class as a Spring service component
+// Marks this class as a Spring service component(2)
 @Service
 
 // Automatically creates constructor for final fields

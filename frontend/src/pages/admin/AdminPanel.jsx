@@ -38,6 +38,13 @@ const SECTIONS = [
   icon: "📅",
   route: "/admin/bookings",
   },
+  {
+  key: "feedback",
+  title: "Feedback Management",
+  description: "Review and manage user feedback and reviews.",
+  icon: "✍🏼",
+  route: "/admin/feedback",
+  }
 ];
 
 export default function AdminPanel() {
