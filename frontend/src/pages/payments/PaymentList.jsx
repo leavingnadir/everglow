@@ -34,25 +34,25 @@ const statusConfig = {
 /* ───────────────────────── METHOD ICONS ───────────────────────── */
 const methodIcons = {
   CARD: (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <rect x="2" y="5" width="20" height="14" rx="2" strokeWidth="1.5" />
-      <path d="M2 10h20" strokeWidth="1.5" />
-    </svg>
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <rect x="2" y="5" width="20" height="14" rx="2" strokeWidth="1.5" />
+        <path d="M2 10h20" strokeWidth="1.5" />
+      </svg>
   ),
   BANK_TRANSFER: (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path
-        d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M12 10v11M16 10v11"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+            d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M12 10v11M16 10v11"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+        />
+      </svg>
   ),
   CASH: (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <rect x="2" y="6" width="20" height="12" rx="2" strokeWidth="1.5" />
-      <circle cx="12" cy="12" r="3" strokeWidth="1.5" />
-    </svg>
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <rect x="2" y="6" width="20" height="12" rx="2" strokeWidth="1.5" />
+        <circle cx="12" cy="12" r="3" strokeWidth="1.5" />
+      </svg>
   ),
 };
 
@@ -60,6 +60,9 @@ const methodIcons = {
 export default function PaymentList() {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
+
+  // ── Route base: admin sees /admin/payments/..., users see /payments/...
+  const base = isAdmin ? "/admin/payments" : "/payments";
 
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -95,190 +98,173 @@ export default function PaymentList() {
 
   const filtered = payments.filter((p) => {
     const matchStatus = filterStatus === "ALL" || p.status === filterStatus;
-
     const matchSearch =
-      searchQuery === "" ||
-      p.bookingId?.toString().includes(searchQuery) ||
-      p.vendorName?.toLowerCase().includes(searchQuery.toLowerCase());
-
+        searchQuery === "" ||
+        p.bookingId?.toString().includes(searchQuery) ||
+        p.vendorName?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchStatus && matchSearch;
   });
 
   const totalRevenue = payments
-    .filter((p) => p.status === "PAID")
-    .reduce((sum, p) => sum + (p.amount || 0), 0);
+      .filter((p) => p.status === "PAID")
+      .reduce((sum, p) => sum + (p.amount || 0), 0);
 
   return (
-    <div className="min-h-screen bg-[#F9EAE8] font-serif">
+      <div className="min-h-screen bg-[#F9EAE8] font-serif">
 
-      {/* ───────── TOP BAR ───────── */}
-      <div className="bg-white border-b border-[#EDE0DF] px-8 py-5 flex items-center justify-between shadow-sm">
+        {/* ───────── TOP BAR ───────── */}
+        <div className="bg-white border-b border-[#EDE0DF] px-8 py-5 flex items-center justify-between shadow-sm">
 
-        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6">
+            {isAdmin && (
+                <button
+                    onClick={() => navigate("/admin")}
+                    className="text-xs uppercase tracking-[0.2em] px-3 py-2 border border-[#EDE0DF] hover:border-[#C9A84C] transition"
+                >
+                  ← Admin Panel
+                </button>
+            )}
 
-          {isAdmin && (
-            <button
-              onClick={() => navigate("/admin")}
-              className="text-xs uppercase tracking-[0.2em] px-3 py-2 border border-[#EDE0DF] hover:border-[#C9A84C] transition"
-            >
-              ← Admin Panel
-            </button>
-          )}
-
-          <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-[#C9A84C] font-sans">
-              Everglow
-            </p>
-            <h1 className="text-2xl text-[#2C2C2C] tracking-wide">
-              Payment Records
-            </h1>
+            <div>
+              <p className="text-xs tracking-[0.3em] uppercase text-[#C9A84C] font-sans">
+                Everglow
+              </p>
+              <h1 className="text-2xl text-[#2C2C2C] tracking-wide">
+                Payment Records
+              </h1>
+            </div>
           </div>
+
+          <button
+              onClick={() => navigate(`${base}/create`)}
+              className="bg-[#C0392B] hover:bg-[#E74C3C] text-white px-5 py-2 text-sm tracking-wide"
+          >
+            + New Payment
+          </button>
         </div>
 
-        <button
-          onClick={() => navigate("/payments/create")}
-          className="bg-[#C0392B] hover:bg-[#E74C3C] text-white px-5 py-2 text-sm tracking-wide"
-        >
-          + New Payment
-        </button>
+        {/* ───────── CONTENT ───────── */}
+        <div className="max-w-7xl mx-auto px-6 py-8">
+
+          {/* STATS */}
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            {[
+              { label: "Total Collected", value: `$${totalRevenue.toLocaleString()}`, accent: "#C9A84C" },
+              { label: "Total Records",   value: payments.length,                      accent: "#C0392B" },
+              { label: "Pending",         value: payments.filter(p => p.status === "PENDING").length, accent: "#C9A84C" },
+            ].map((s) => (
+                <div key={s.label} className="bg-white border border-[#EDE0DF] p-5 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[#2C2C2C]/50">{s.label}</p>
+                  <p className="text-3xl mt-1" style={{ color: s.accent }}>{s.value}</p>
+                </div>
+            ))}
+          </div>
+
+          {/* SEARCH + FILTER */}
+          <div className="flex gap-3 mb-6">
+            <input
+                className="border border-[#EDE0DF] px-3 py-2 flex-1 font-sans text-sm"
+                placeholder="Search by booking or vendor..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {["ALL", "PAID", "PENDING", "FAILED", "REFUNDED"].map((s) => (
+                <button
+                    key={s}
+                    onClick={() => setFilterStatus(s)}
+                    className={`px-3 py-2 text-xs border tracking-wide ${
+                        filterStatus === s
+                            ? "bg-[#C0392B] text-white"
+                            : "bg-white text-[#2C2C2C]"
+                    }`}
+                >
+                  {s}
+                </button>
+            ))}
+          </div>
+
+          {/* TABLE */}
+          <div className="bg-white border border-[#EDE0DF] overflow-hidden shadow-sm">
+            {loading ? (
+                <div className="p-10 text-center">Loading...</div>
+            ) : error ? (
+                <div className="p-10 text-red-500 text-center">{error}</div>
+            ) : filtered.length === 0 ? (
+                <div className="p-10 text-center text-[#2C2C2C]/40">No payment records found</div>
+            ) : (
+                <table className="w-full text-sm font-sans">
+                  <thead className="bg-[#F9EAE8] border-b">
+                  <tr>
+                    {["Booking", "Vendor", "Amount", "Method", "Date", "Status", ""].map((h) => (
+                        <th key={h} className="text-left px-4 py-3 text-xs uppercase tracking-wider">{h}</th>
+                    ))}
+                  </tr>
+                  </thead>
+
+                  <tbody className="divide-y divide-[#EDE0DF]">
+                  {filtered.map((p) => {
+                    const status = statusConfig[p.status] || statusConfig.PENDING;
+                    return (
+                        <tr key={p.id} className="hover:bg-[#F9EAE8]/40">
+
+                          <td className="px-4 py-3 font-medium">#{p.bookingId}</td>
+                          <td className="px-4 py-3">{p.vendorName || "-"}</td>
+                          <td className="px-4 py-3 font-semibold">${p.amount}</td>
+
+                          <td className="px-4 py-3 flex items-center gap-2">
+                            {methodIcons[p.paymentMethod]}
+                            {p.paymentMethod}
+                          </td>
+
+                          <td className="px-4 py-3">
+                            {p.paymentDate ? new Date(p.paymentDate).toLocaleDateString() : "-"}
+                          </td>
+
+                          <td className="px-4 py-3">
+                            <span className={status.text}>{status.label}</span>
+                          </td>
+
+                          {/* ACTIONS */}
+                          <td className="px-4 py-3 text-right">
+
+                            {/* EDIT — uses base so admin stays on /admin/payments/:id/edit */}
+                            <button
+                                onClick={() => navigate(`${base}/${p.id}/edit`)}
+                                className="mr-3 text-[#2C2C2C]/60 hover:text-[#C9A84C]"
+                                title="Edit"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                    strokeWidth="1.5"
+                                />
+                              </svg>
+                            </button>
+
+                            {/* DELETE */}
+                            <button
+                                onClick={() => handleDelete(p.id)}
+                                className="text-[#2C2C2C]/60 hover:text-[#C0392B]"
+                                title="Delete"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862A2 2 0 015 19.142L4 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                    strokeWidth="1.5"
+                                />
+                              </svg>
+                            </button>
+
+                          </td>
+                        </tr>
+                    );
+                  })}
+                  </tbody>
+                </table>
+            )}
+          </div>
+
+        </div>
       </div>
-
-      {/* ───────── CONTENT ───────── */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
-
-        {/* STATS */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {[
-            { label: "Total Collected", value: `$${totalRevenue.toLocaleString()}`, accent: "#C9A84C" },
-            { label: "Total Records", value: payments.length, accent: "#C0392B" },
-            { label: "Pending", value: payments.filter(p => p.status === "PENDING").length, accent: "#C9A84C" },
-          ].map((s) => (
-            <div key={s.label} className="bg-white border border-[#EDE0DF] p-5 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.2em] text-[#2C2C2C]/50">
-                {s.label}
-              </p>
-              <p className="text-3xl mt-1" style={{ color: s.accent }}>
-                {s.value}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* SEARCH + FILTER */}
-        <div className="flex gap-3 mb-6">
-          <input
-            className="border border-[#EDE0DF] px-3 py-2 flex-1 font-sans text-sm"
-            placeholder="Search by booking or vendor..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-
-          {["ALL", "PAID", "PENDING", "FAILED", "REFUNDED"].map((s) => (
-            <button
-              key={s}
-              onClick={() => setFilterStatus(s)}
-              className={`px-3 py-2 text-xs border tracking-wide ${
-                filterStatus === s
-                  ? "bg-[#C0392B] text-white"
-                  : "bg-white text-[#2C2C2C]"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-
-        {/* TABLE */}
-        <div className="bg-white border border-[#EDE0DF] overflow-hidden shadow-sm">
-
-          {loading ? (
-            <div className="p-10 text-center">Loading...</div>
-          ) : error ? (
-            <div className="p-10 text-red-500 text-center">{error}</div>
-          ) : filtered.length === 0 ? (
-            <div className="p-10 text-center text-[#2C2C2C]/40">
-              No payment records found
-            </div>
-          ) : (
-            <table className="w-full text-sm font-sans">
-
-              <thead className="bg-[#F9EAE8] border-b">
-                <tr>
-                  {["Booking", "Vendor", "Amount", "Method", "Date", "Status", ""].map(h => (
-                    <th key={h} className="text-left px-4 py-3 text-xs uppercase tracking-wider">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-[#EDE0DF]">
-                {filtered.map((p) => {
-                  const status = statusConfig[p.status] || statusConfig.PENDING;
-
-                  return (
-                    <tr key={p.id} className="hover:bg-[#F9EAE8]/40">
-
-                      <td className="px-4 py-3 font-medium">#{p.bookingId}</td>
-                      <td className="px-4 py-3">{p.vendorName || "-"}</td>
-                      <td className="px-4 py-3 font-semibold">${p.amount}</td>
-
-                      <td className="px-4 py-3 flex items-center gap-2">
-                        {methodIcons[p.paymentMethod]}
-                        {p.paymentMethod}
-                      </td>
-
-                      <td className="px-4 py-3">
-                        {p.paymentDate
-                          ? new Date(p.paymentDate).toLocaleDateString()
-                          : "-"}
-                      </td>
-
-                      <td className="px-4 py-3">
-                        <span className={status.text}>
-                          {status.label}
-                        </span>
-                      </td>
-
-                      {/* ACTIONS */}
-                      <td className="px-4 py-3 text-right">
-
-                        {/* EDIT ICON */}
-                        <button
-                          onClick={() => navigate(`/payments/${p.id}/edit`)}
-                          className="mr-3 text-[#2C2C2C]/60 hover:text-[#C9A84C]"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                              strokeWidth="1.5"
-                            />
-                          </svg>
-                        </button>
-
-                        {/* DELETE ICON */}
-                        <button
-                          onClick={() => handleDelete(p.id)}
-                          className="text-[#2C2C2C]/60 hover:text-[#C0392B]"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862A2 2 0 015 19.142L4 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              strokeWidth="1.5"
-                            />
-                          </svg>
-                        </button>
-
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-      </div>
-    </div>
   );
 }
